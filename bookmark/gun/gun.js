@@ -1,16 +1,18 @@
 (function (w) {
   "use strict";
-  const KEY = "__ELEMENT_SNIPER_25__";
-  const VERSION = "2.5.0";
+  const KEY = "__ELEMENT_SNIPER_26__";
+  const VERSION = "2.6.0";
   function ElementSniper(opts) {
     opts = opts || {};
     if (w[KEY]) { w[KEY].destroy(); return null; }
     const d = w.document;
     if (!d || !d.documentElement) return null;
     const host = d.createElement("div");
-    host.id = "__element_sniper_25_host";
-    host.style.cssText = "all:initial;position:fixed;inset:0;z-index:2147483647;pointer-events:none";
+    host.id = "__element_sniper_26_host";
+    host.setAttribute("popover","manual");
+    host.style.cssText = "all:initial;position:fixed;inset:0;margin:0;padding:0;border:0;background:transparent;overflow:visible;max-width:none;max-height:none;z-index:2147483647;pointer-events:none";
     d.documentElement.appendChild(host);
+    try { if (typeof host.showPopover === "function") host.showPopover(); } catch (_) { host.removeAttribute("popover"); }
     const root = host.attachShadow({mode:"open"});
     root.innerHTML = `
 <style>
@@ -25,7 +27,7 @@ button{font:700 11px system-ui;letter-spacing:.5px;color:#eaffff;background:#153
 .reticle:before,.reticle:after{content:"";position:absolute;background:#52eaff}.reticle:before{width:48px;height:1px;left:-9px;top:15px}.reticle:after{height:48px;width:1px;top:-9px;left:15px}
 .reticle.lock{border-color:#ff535d;filter:drop-shadow(0 0 7px #ff304c)}.reticle.lock:before,.reticle.lock:after{background:#ff535d}
 .gun{position:fixed;left:0;top:0;width:170px;height:90px;transform-origin:167px 42px;pointer-events:none;filter:drop-shadow(0 5px 8px #00101dcc);will-change:transform,left,top}
-.gun.recoil{animation:recoil .19s ease-out}@keyframes recoil{0%{translate:0 0}32%{translate:-9px 3px}100%{translate:0 0}}
+
 .projectile{position:fixed;width:14px;height:3px;border-radius:100%;background:#fff;box-shadow:0 0 6px 2px #42eaff;pointer-events:none}
 .flash{position:fixed;width:12px;height:12px;border-radius:50%;background:#fff;box-shadow:0 0 13px 6px #ffbd45;transform:translate(-50%,-50%);animation:fade .16s forwards;pointer-events:none}
 .impact{position:fixed;width:24px;height:24px;border:2px solid #ffd15a;border-radius:50%;animation:pop .34s ease-out forwards;pointer-events:none}
@@ -51,7 +53,7 @@ button{font:700 11px system-ui;letter-spacing:.5px;color:#eaffff;background:#153
     function normalize(n) {
       if(n && n.nodeType===3) n=n.parentElement;
       if(!(n instanceof w.Element) || blocked(n)) return null;
-      if(n.closest && n.closest("#__element_sniper_25_host")) return null;
+      if(n.closest && n.closest("#__element_sniper_26_host")) return null;
       return n;
     }
     function hitTest(x,y,doc) {
@@ -99,10 +101,8 @@ button{font:700 11px system-ui;letter-spacing:.5px;color:#eaffff;background:#153
       let da=((t.a-g.a+Math.PI*3)%(Math.PI*2))-Math.PI;
       g.a+=da*.24;
       const node=$("gun");
-      node.style.left=g.x+"px";node.style.top=g.y+"px";let visualAngle=g.a, flipX=false;
-      if(visualAngle>Math.PI/2){visualAngle-=Math.PI;flipX=true;}
-      else if(visualAngle< -Math.PI/2){visualAngle+=Math.PI;flipX=true;}
-      node.style.transform="rotate("+visualAngle+"rad) scaleX("+(flipX?-1:1)+")";
+      node.style.left=g.x+"px";node.style.top=g.y+"px";const flipY=Math.cos(g.a)<0;
+      node.style.transform="rotate("+g.a+"rad) scaleY("+(flipY?-1:1)+")";
       state.raf=w.requestAnimationFrame(animate);
     }
     function move(e) {
@@ -135,16 +135,14 @@ button{font:700 11px system-ui;letter-spacing:.5px;color:#eaffff;background:#153
       e.preventDefault();e.stopImmediatePropagation();move(e);
       state.gun={...state.aim};
       const gunNode=$("gun");
-      let visualAngle=state.gun.a, flipX=false;
-      if(visualAngle>Math.PI/2){visualAngle-=Math.PI;flipX=true;}
-      else if(visualAngle< -Math.PI/2){visualAngle+=Math.PI;flipX=true;}
+      const flipY=Math.cos(state.gun.a)<0;
       gunNode.style.left=state.gun.x+"px";gunNode.style.top=state.gun.y+"px";
-      gunNode.style.transform="rotate("+visualAngle+"rad) scaleX("+(flipX?-1:1)+")";
+      gunNode.style.transform="rotate("+state.gun.a+"rad) scaleY("+(flipY?-1:1)+")";
       const angle=state.gun.a;
       // The SVG's actual barrel tip is x=167,y=42. All effects originate at this exact transformed point.
       const sx=state.gun.x+muzzle.x;
       const sy=state.gun.y+muzzle.y;
-      const gun=$("gun");gun.classList.remove("recoil");void gun.offsetWidth;gun.classList.add("recoil");
+      
       effect("flash",sx,sy,180);
       const shell=effect("shell",sx-3,sy-3,560);
       shell.animate([{transform:"translate(0,0) rotate(0)",opacity:1},{transform:"translate(-30px,42px) rotate(250deg)",opacity:0}],{duration:520,easing:"ease-out"});
