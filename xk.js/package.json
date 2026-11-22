@@ -1,0 +1,32 @@
+{
+  "name": "@xclounkit234x/xk-plugin",
+  "version": "0.1.0",
+  "description": "A modular browser plugin framework by Xclounkit234X Productions.",
+  "type": "module",
+  "main": "./dist/xk.js",
+  "module": "./dist/xk.js",
+  "unpkg": "./dist/xk.min.js",
+  "jsdelivr": "./dist/xk.min.js",
+  "exports": {
+    ".": {
+      "import": "./dist/xk.js",
+      "default": "./dist/xk.js"
+    },
+    "./src": "./src/index.js"
+  },
+  "files": [
+    "dist/",
+    "src/",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "npm run clean && npm run build:esm && npm run build:min",
+    "build:esm": "esbuild src/index.js --bundle --format=esm --target=es2020 --outfile=dist/xk.js",
+    "build:min": "esbuild src/index.js --bundle --format=esm --target=es2020 --minify --outfile=dist/xk.min.js",
+    "clean": "node -e \"import('node:fs').then(fs => fs.rmSync('dist', { recursive: true, force: true }))\""
+  },
+  "devDependencies": {
+    "esbuild": "^0.25.0"
+  },
+  "license": "MIT"
+}
