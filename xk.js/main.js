@@ -1,1 +1,1 @@
-console.log('loaded plugin xk');
+console.log('loaded plugin xk ~');
