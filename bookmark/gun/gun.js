@@ -1,14 +1,14 @@
 (function (w) {
   "use strict";
-  const KEY = "__ELEMENT_SNIPER_23__";
-  const VERSION = "2.3.0";
+  const KEY = "__ELEMENT_SNIPER_24__";
+  const VERSION = "2.4.0";
   function ElementSniper(opts) {
     opts = opts || {};
     if (w[KEY]) { w[KEY].destroy(); return null; }
     const d = w.document;
     if (!d || !d.documentElement) return null;
     const host = d.createElement("div");
-    host.id = "__element_sniper_23_host";
+    host.id = "__element_sniper_24_host";
     host.style.cssText = "all:initial;position:fixed;inset:0;z-index:2147483647;pointer-events:none";
     d.documentElement.appendChild(host);
     const root = host.attachShadow({mode:"open"});
@@ -24,14 +24,14 @@ button{font:700 11px system-ui;letter-spacing:.5px;color:#eaffff;background:#153
 .reticle{position:fixed;width:34px;height:34px;left:0;top:0;transform:translate(-50%,-50%);border:1.5px solid #52eaff;border-radius:50%;pointer-events:none;filter:drop-shadow(0 0 5px #00dfff)}
 .reticle:before,.reticle:after{content:"";position:absolute;background:#52eaff}.reticle:before{width:48px;height:1px;left:-9px;top:15px}.reticle:after{height:48px;width:1px;top:-9px;left:15px}
 .reticle.lock{border-color:#ff535d;filter:drop-shadow(0 0 7px #ff304c)}.reticle.lock:before,.reticle.lock:after{background:#ff535d}
-.gun{position:fixed;left:0;top:0;width:170px;height:90px;transform-origin:166px 42px;pointer-events:none;filter:drop-shadow(0 5px 8px #00101dcc);will-change:transform,left,top}
+.gun{position:fixed;left:0;top:0;width:170px;height:90px;transform-origin:167px 42px;pointer-events:none;filter:drop-shadow(0 5px 8px #00101dcc);will-change:transform,left,top}
 .gun.recoil{animation:recoil .19s ease-out}@keyframes recoil{0%{translate:0 0}32%{translate:-9px 3px}100%{translate:0 0}}
 .projectile{position:fixed;width:14px;height:3px;border-radius:100%;background:#fff;box-shadow:0 0 6px 2px #42eaff;pointer-events:none}
-.flash{position:fixed;width:12px;height:12px;border-radius:50%;background:#fff;box-shadow:0 0 13px 6px #ffbd45;animation:fade .16s forwards;pointer-events:none}
+.flash{position:fixed;width:12px;height:12px;border-radius:50%;background:#fff;box-shadow:0 0 13px 6px #ffbd45;transform:translate(-50%,-50%);animation:fade .16s forwards;pointer-events:none}
 .impact{position:fixed;width:24px;height:24px;border:2px solid #ffd15a;border-radius:50%;animation:pop .34s ease-out forwards;pointer-events:none}
 .shell{position:fixed;width:6px;height:10px;border-radius:2px;background:linear-gradient(90deg,#8a5524,#ffe19a,#9b642c);pointer-events:none}
 .toast{position:fixed;left:50%;top:18%;transform:translateX(-50%);padding:9px 14px;border:1px solid #42dcff;border-radius:30px;background:#071827ed;color:#dffaff;font:800 12px system-ui;letter-spacing:1px;animation:toast .8s forwards;pointer-events:none;white-space:nowrap}
-@keyframes fade{to{opacity:0;transform:scale(2.2)}}@keyframes pop{to{opacity:0;transform:scale(2.6)}}@keyframes toast{0%,65%{opacity:1}100%{opacity:0;transform:translate(-50%,-14px)}}
+@keyframes fade{to{opacity:0;transform:translate(-50%,-50%) scale(2.2)}}@keyframes pop{to{opacity:0;transform:scale(2.6)}}@keyframes toast{0%,65%{opacity:1}100%{opacity:0;transform:translate(-50%,-14px)}}
 </style>
 <div class="hud"><div class="brand"><span>✦ ELEMENT SNIPER</span><span class="ver">v${VERSION}</span></div>
 <div class="status" id="target">SCANNING · MOVE TO ACQUIRE</div>
@@ -45,13 +45,13 @@ button{font:700 11px system-ui;letter-spacing:.5px;color:#eaffff;background:#153
 <path d="M17 30h68l14 9H17z" fill="#102a42"/><path d="M28 34h49" stroke="url(#glow)" stroke-width="3"/><path d="M118 37h29v10h-29z" fill="#092239"/><circle cx="128" cy="42" r="4" fill="#66f4ff"/><path d="M65 61h23l-8 19H58z" fill="#244966"/><path d="M155 36h12v13h-12z" fill="#e5ffff"/>
 </svg>`;
     const $ = id => root.getElementById(id);
-    const muzzle = {x:166,y:42};
+    const muzzle = {x:167,y:42};
     const state = {active:true,multi:true,score:0,hits:0,current:null,history:[],pointer:{x:w.innerWidth*.55,y:w.innerHeight*.5},gun:{x:0,y:0,a:0},aim:{x:0,y:0,a:0},raf:0};
     const blocked = el => !el || el===host || host.contains(el) || el===d.body || el===d.documentElement;
     function normalize(n) {
       if(n && n.nodeType===3) n=n.parentElement;
       if(!(n instanceof w.Element) || blocked(n)) return null;
-      if(n.closest && n.closest("#__element_sniper_23_host")) return null;
+      if(n.closest && n.closest("#__element_sniper_24_host")) return null;
       return n;
     }
     function hitTest(x,y,doc) {
@@ -99,7 +99,10 @@ button{font:700 11px system-ui;letter-spacing:.5px;color:#eaffff;background:#153
       let da=((t.a-g.a+Math.PI*3)%(Math.PI*2))-Math.PI;
       g.a+=da*.24;
       const node=$("gun");
-      node.style.left=g.x+"px";node.style.top=g.y+"px";node.style.transform="rotate("+g.a+"rad)";
+      node.style.left=g.x+"px";node.style.top=g.y+"px";let visualAngle=g.a, flipX=false;
+      if(visualAngle>Math.PI/2){visualAngle-=Math.PI;flipX=true;}
+      else if(visualAngle< -Math.PI/2){visualAngle+=Math.PI;flipX=true;}
+      node.style.transform="rotate("+visualAngle+"rad) scaleX("+(flipX?-1:1)+")";
       state.raf=w.requestAnimationFrame(animate);
     }
     function move(e) {
@@ -135,10 +138,10 @@ button{font:700 11px system-ui;letter-spacing:.5px;color:#eaffff;background:#153
       const sx=state.gun.x+muzzle.x*c-muzzle.y*s;
       const sy=state.gun.y+muzzle.x*s+muzzle.y*c;
       const gun=$("gun");gun.classList.remove("recoil");void gun.offsetWidth;gun.classList.add("recoil");
-      effect("flash",sx-6,sy-6,180);
+      effect("flash",sx,sy,180);
       const shell=effect("shell",sx-3,sy-3,560);
       shell.animate([{transform:"translate(0,0) rotate(0)",opacity:1},{transform:"translate(-30px,42px) rotate(250deg)",opacity:0}],{duration:520,easing:"ease-out"});
-      const bullet=d.createElement("div");bullet.className="projectile";bullet.style.left=sx+"px";bullet.style.top=sy+"px";root.appendChild(bullet);
+      const bullet=d.createElement("div");bullet.className="projectile";bullet.style.left=(sx-7)+"px";bullet.style.top=(sy-1.5)+"px";bullet.style.transform="rotate("+angle+"rad)";bullet.style.transformOrigin="center";root.appendChild(bullet);
       const dx=e.clientX-sx,dy=e.clientY-sy;
       const anim=bullet.animate([{transform:"translate(0,0)"},{transform:"translate("+dx+"px,"+dy+"px)"}],{duration:Math.min(260,Math.max(80,Math.hypot(dx,dy)*.3)),easing:"cubic-bezier(.2,.7,.3,1)"});
       anim.onfinish=()=>{
