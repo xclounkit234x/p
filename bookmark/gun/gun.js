@@ -1,14 +1,14 @@
 (function (w) {
   "use strict";
-  const KEY = "__ELEMENT_SNIPER_24__";
-  const VERSION = "2.4.0";
+  const KEY = "__ELEMENT_SNIPER_25__";
+  const VERSION = "2.5.0";
   function ElementSniper(opts) {
     opts = opts || {};
     if (w[KEY]) { w[KEY].destroy(); return null; }
     const d = w.document;
     if (!d || !d.documentElement) return null;
     const host = d.createElement("div");
-    host.id = "__element_sniper_24_host";
+    host.id = "__element_sniper_25_host";
     host.style.cssText = "all:initial;position:fixed;inset:0;z-index:2147483647;pointer-events:none";
     d.documentElement.appendChild(host);
     const root = host.attachShadow({mode:"open"});
@@ -51,7 +51,7 @@ button{font:700 11px system-ui;letter-spacing:.5px;color:#eaffff;background:#153
     function normalize(n) {
       if(n && n.nodeType===3) n=n.parentElement;
       if(!(n instanceof w.Element) || blocked(n)) return null;
-      if(n.closest && n.closest("#__element_sniper_24_host")) return null;
+      if(n.closest && n.closest("#__element_sniper_25_host")) return null;
       return n;
     }
     function hitTest(x,y,doc) {
@@ -133,10 +133,17 @@ button{font:700 11px system-ui;letter-spacing:.5px;color:#eaffff;background:#153
       if(!state.active || host.contains(e.target) || e.button!==0)return;
       const el=targetAt(e.clientX,e.clientY,e)||state.current;if(!el)return;
       e.preventDefault();e.stopImmediatePropagation();move(e);
-      const angle=state.gun.a, c=Math.cos(angle),s=Math.sin(angle);
+      state.gun={...state.aim};
+      const gunNode=$("gun");
+      let visualAngle=state.gun.a, flipX=false;
+      if(visualAngle>Math.PI/2){visualAngle-=Math.PI;flipX=true;}
+      else if(visualAngle< -Math.PI/2){visualAngle+=Math.PI;flipX=true;}
+      gunNode.style.left=state.gun.x+"px";gunNode.style.top=state.gun.y+"px";
+      gunNode.style.transform="rotate("+visualAngle+"rad) scaleX("+(flipX?-1:1)+")";
+      const angle=state.gun.a;
       // The SVG's actual barrel tip is x=167,y=42. All effects originate at this exact transformed point.
-      const sx=state.gun.x+muzzle.x*c-muzzle.y*s;
-      const sy=state.gun.y+muzzle.x*s+muzzle.y*c;
+      const sx=state.gun.x+muzzle.x;
+      const sy=state.gun.y+muzzle.y;
       const gun=$("gun");gun.classList.remove("recoil");void gun.offsetWidth;gun.classList.add("recoil");
       effect("flash",sx,sy,180);
       const shell=effect("shell",sx-3,sy-3,560);
