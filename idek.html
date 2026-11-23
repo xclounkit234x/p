@@ -1,0 +1,1356 @@
+<!--
+  packed by xk-singlefile-engine v3
+  mode: paranoid
+  assets: 6
+  compress: true  wasmCompress: true
+  made by xclounkit234x@gmail.com got bored.
+  generated offline – IndexedDB + CompressionStream + Virtual FS
+-->
+<!doctype html>
+<html lang="en">
+<head>
+
+<script data-xk="vfs">
+(function(){
+  var VFS = {
+  "style.css": { mime:"text/css", text:":root {\n  /* --- WALLPAPER DEFINITIONS (Defined Global) --- */\n  --wallpaper-dark: url('https://images.unsplash.com/photo-1550684848-fac1c5b4e853?q=80&w=2070&auto=format&fit=crop');\n  --wallpaper-light: url('https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=2564&auto=format&fit=crop');\n\n  /* --- SAFARI DARK MODE (Default) --- */\n  --bg: #1e1e1e;\n  --window-bg: rgba(45, 45, 45, 0.75); \n  --tab-bar-bg: rgba(35, 35, 35, 0.7);\n  --tab-active: rgba(80, 80, 80, 0.6);\n  --tab-inactive: transparent;\n  --tab-text: #FFFFFF;\n  --tab-text-inactive: #A0A0A0;\n  --urlbar-bg: rgba(80, 80, 80, 0.5);\n  --urlbar-text: #FFFFFF;\n  --urlbar-icon: #D0D0D0;\n  --icon-color: #E0E0E0;\n  --border: rgba(255, 255, 255, 0.12);\n  --menu-bg: rgba(40, 40, 40, 0.9);\n  --menu-hover: #007AFF;\n  --accent: #007AFF;\n  --ntp-text: #fff;\n  --glass-card: rgba(60, 60, 60, 0.4);\n  --shadow: 0 10px 30px rgba(0,0,0,0.5);\n   \n  /* Default Wallpaper */\n  --current-wallpaper: var(--wallpaper-dark);\n}\n\nbody.light-mode {\n  /* --- SAFARI LIGHT MODE --- */\n  --bg: #E5E5E5;\n  --window-bg: rgba(245, 245, 245, 0.65);\n  --tab-bar-bg: rgba(230, 230, 230, 0.6);\n  --tab-active: rgba(255, 255, 255, 0.8);\n  --tab-inactive: transparent;\n  --tab-text: #000000;\n  --tab-text-inactive: #606060;\n  --urlbar-bg: rgba(255, 255, 255, 0.5);\n  --urlbar-text: #000000;\n  --urlbar-icon: #5C5C5C;\n  --icon-color: #333333;\n  --border: rgba(0, 0, 0, 0.1);\n  --menu-bg: rgba(255, 255, 255, 0.85);\n  --menu-hover: #007AFF;\n  --accent: #007AFF;\n  --ntp-text: #fff; \n  --glass-card: rgba(255, 255, 255, 0.4);\n  --shadow: 0 10px 30px rgba(0,0,0,0.15);\n   \n  /* Light Wallpaper Override */\n  --current-wallpaper: var(--wallpaper-light);\n}\n\n* { margin: 0; padding: 0; box-sizing: border-box; user-select: none; }\n\nbody {\n  font-family: -apple-system, BlinkMacSystemFont, \"SF Pro Text\", \"Segoe UI\", Roboto, sans-serif;\n   \n  /* Apply the variable that changes based on class */\n  background-image: var(--current-wallpaper);\n  background-size: cover;\n  background-position: center;\n  background-attachment: fixed;\n   \n  background-color: var(--bg);\n  color: var(--tab-text);\n  height: 100vh;\n  display: flex;\n  flex-direction: column;\n  overflow: hidden;\n  transition: background-image 0.4s ease-in-out;\n}\n\n/* --- UI CHROME --- */\n#browser-ui {\n  display: flex;\n  flex-direction: column;\n  background: transparent;\n  flex-shrink: 0;\n  position: relative;\n  z-index: 100;\n}\n\n/* 1. TOOLBAR */\n#nav-toolbar {\n  display: flex; align-items: center; padding: 8px 16px; gap: 10px;\n  background: var(--window-bg); height: 52px;\n  backdrop-filter: blur(25px) saturate(180%);\n  -webkit-backdrop-filter: blur(25px) saturate(180%);\n  border-bottom: 1px solid var(--border);\n  transition: background 0.3s;\n}\n\n.nav-btn {\n  width: 32px; height: 32px;\n  border-radius: 6px;\n  border: none;\n  background: transparent;\n  color: var(--icon-color);\n  display: flex; align-items: center; justify-content: center;\n  cursor: pointer;\n  transition: background 0.1s;\n}\n.nav-btn:hover:not(:disabled) { background: rgba(128,128,128,0.2); }\n.nav-btn:disabled { opacity: 0.3; cursor: default; }\n.nav-btn svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }\n\n/* URL Bar */\n#urlbar-container { flex: 1; position: relative; display: flex; justify-content: center; margin: 0 10px; }\n\n#urlbar-wrapper {\n  width: 100%; max-width: 700px;\n  display: flex; align-items: center;\n  background: var(--urlbar-bg);\n  border-radius: 8px;\n  height: 34px; padding: 0 8px;\n  transition: background 0.1s, box-shadow 0.1s;\n  border: 1px solid rgba(0,0,0,0.05);\n}\n#urlbar-wrapper:focus-within {\n  background: var(--tab-text); \n  color: var(--bg);\n  box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.4);\n}\nbody:not(.light-mode) #urlbar-wrapper:focus-within #urlbar-input { color: #000; }\nbody.light-mode #urlbar-wrapper:focus-within { background: #fff; }\n\n#urlbar-input {\n  flex: 1; background: transparent; border: none;\n  color: var(--urlbar-text); font-size: 13px; outline: none;\n  font-family: inherit; text-align: center;\n}\n#urlbar-wrapper:focus-within #urlbar-input { text-align: left; }\n\n.urlbar-icon {\n  color: var(--urlbar-icon); opacity: 0.8; padding: 4px;\n  border-radius: 4px; cursor: pointer; display: flex; align-items: center; border:none; background:transparent;\n}\n.urlbar-icon:hover { background: rgba(128,128,128,0.1); color: var(--accent); }\n.urlbar-icon svg { width: 14px; height: 14px; stroke: currentColor; stroke-width: 2; fill: none; }\n\n#url-spinner {\n  width: 14px; height: 14px; margin-right: 8px;\n  border: 2px solid rgba(128,128,128,0.3); border-top-color: var(--accent);\n  border-radius: 50%; animation: spin 0.8s linear infinite; display: none;\n}\n.loading #url-spinner { display: block; }\n.loading #url-lock { display: none; }\n\n/* 2. TAB STRIP */\n#tabs-strip {\n  display: flex; align-items: flex-end; \n  padding: 0 8px; height: 34px; gap: 2px;\n  background: var(--tab-bar-bg);\n  backdrop-filter: blur(25px) saturate(180%);\n  -webkit-backdrop-filter: blur(25px) saturate(180%);\n  border-bottom: 1px solid var(--border);\n  transition: height 0.2s, opacity 0.2s;\n}\n#tabs-strip.hidden {\n  height: 0; opacity: 0; overflow: hidden; padding: 0; border: none;\n}\n\n#tabs-container {\n  display: flex; flex: 1; overflow-x: auto; gap: 4px; scrollbar-width: none; align-items: stretch; height: 100%;\n}\n#tabs-container::-webkit-scrollbar { display: none; }\n\n.tab {\n  display: flex; align-items: center; justify-content: center;\n  padding: 0 10px;\n  color: var(--tab-text-inactive);\n  background: var(--tab-inactive);\n  border-radius: 4px 4px 0 0;\n  min-width: 120px; max-width: 240px;\n  flex: 1; font-size: 12px; cursor: default;\n  position: relative; transition: 0.1s; border: none;\n}\n.tab:hover:not(.active) { background: rgba(128,128,128,0.2); }\n\n.tab.active {\n  background: var(--tab-active);\n  color: var(--tab-text);\n  box-shadow: 0 1px 4px rgba(0,0,0,0.1);\n}\n\n.tab-icon-area { width: 14px; height: 14px; margin-right: 6px; flex-shrink: 0; display:flex; align-items:center; }\n.tab-favicon { width: 14px; height: 14px; }\n.tab-title { flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-align: center; }\n.tab-close {\n  width: 16px; height: 16px; border-radius: 4px; border: none;\n  background: transparent; color: inherit; cursor: pointer;\n  display: flex; align-items: center; justify-content: center;\n  opacity: 0; font-size: 14px; margin-left: 6px;\n}\n.tab:hover .tab-close { opacity: 0.6; }\n.tab-close:hover { background: rgba(128,128,128,0.3); opacity: 1; }\n\n#tab-strip-plus {\n  width: 28px; height: 28px;\n  display: flex; align-items: center; justify-content: center;\n  background: transparent; border: none;\n  color: var(--icon-color) !important;\n  border-radius: 6px; cursor: pointer; flex-shrink: 0; margin-left: 6px; margin-bottom: 3px;\n}\n#tab-strip-plus:hover { background: rgba(128,128,128,0.25); }\n#tab-strip-plus svg { width: 16px; height: 16px; stroke: currentColor; stroke-width: 2; fill: none; }\n\n#bookmarks-bar { display: none; }\n\n/* POPUPS */\n.popup-menu {\n  position: absolute; top: 52px; width: 260px;\n  background: var(--menu-bg); border: 1px solid var(--border);\n  border-radius: 10px; box-shadow: 0 15px 40px rgba(0,0,0,0.4);\n  display: none; flex-direction: column; padding: 6px; z-index: 999;\n  backdrop-filter: blur(30px) saturate(180%); -webkit-backdrop-filter: blur(30px) saturate(180%);\n}\n#menu-popup { right: 10px; }\n#bookmarks-popup { right: 50px; }\n\n.popup-menu.show { display: flex; animation: fadein 0.15s ease; }\n\n.menu-item {\n  padding: 6px 10px; display: flex; align-items: center; gap: 10px;\n  color: var(--tab-text); cursor: pointer; font-size: 13px; border-radius: 5px;\n}\n.menu-item:hover { background: var(--menu-hover); color: white; }\n.menu-sep { height: 1px; background: var(--border); margin: 4px 0; opacity: 0.5; }\n.menu-item img { width: 16px; height: 16px; border-radius: 3px; }\n\n#web-content { flex: 1; position: relative; background: #fff; }\n\n/* Iframe must be transparent for internal pages to see background */\niframe.web-frame { \n    width: 100%; height: 100%; border: none; display: none; \n    background: transparent; \n}\niframe.web-frame.active { display: block; }\n\n#status-bar {\n  background: var(--window-bg); color: var(--icon-color); opacity: 0.9; font-size: 11px;\n  padding: 2px 10px; border-top: 1px solid var(--border); text-align: center;\n  backdrop-filter: blur(25px) saturate(180%); -webkit-backdrop-filter: blur(25px) saturate(180%);\n}\n\n/* --- START PAGE --- */\n.internal-page {\n  /* Wallpaper is reinjected here via JS for Iframe isolation */\n  background-image: var(--current-wallpaper);\n  background-size: cover;\n  background-position: center;\n  background-attachment: fixed;\n  color: var(--ntp-text); height: 100%; width: 100%;\n  font-family: -apple-system, system-ui, sans-serif;\n  display: flex; flex-direction: column; align-items: center;\n  padding-top: 8vh; overflow-y: auto;\n  text-shadow: 0 2px 15px rgba(0,0,0,0.5);\n}\n\n.start-container { width: 100%; max-width: 900px; padding: 20px; }\n.section-title { font-size: 22px; font-weight: 700; margin-bottom: 20px; color: #fff; }\n\n.favorites-grid { display: flex; flex-wrap: wrap; gap: 32px; margin-bottom: 50px; }\n.fav-card {\n  display: flex; flex-direction: column; align-items: center; gap: 8px;\n  cursor: pointer; width: 80px; transition: transform 0.1s;\n}\n.fav-card:hover { transform: scale(1.05); }\n.fav-icon {\n  width: 68px; height: 68px; background: rgba(255,255,255,0.9); border-radius: 16px;\n  display: flex; align-items: center; justify-content: center;\n  box-shadow: 0 5px 20px rgba(0,0,0,0.2);\n}\n.fav-icon img { width: 40px; height: 40px; object-fit: contain; }\n.fav-label { \n    font-size: 13px; font-weight: 500; text-align: center; color: #fff; \n    text-shadow: 0 1px 3px rgba(0,0,0,0.8);\n}\n\n.privacy-card {\n  background: var(--glass-card);\n  backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);\n  border-radius: 12px; padding: 20px;\n  box-shadow: var(--shadow);\n  display: flex; align-items: center; gap: 20px;\n  max-width: 400px; cursor: default; border: 1px solid rgba(255,255,255,0.1);\n}\n.shield-big { width: 40px; height: 40px; stroke: #fff; fill: none; stroke-width: 2; }\n.privacy-text h3 { margin: 0 0 4px 0; font-size: 15px; color: #fff; }\n.privacy-text p { margin: 0; font-size: 12px; opacity: 0.9; color: #fff; }\n\n@keyframes spin { to { transform: rotate(360deg); } }\n@keyframes fadein { from { opacity:0; transform:translateY(5px); } to { opacity:1; transform:translateY(0); } }\n\n/* Endpoint ?f=1: render only the active website, edge-to-edge. */\nbody.page-only #browser-ui,\nbody.page-only #status-bar {\n  display: none !important;\n}\nbody.page-only #web-content {\n  position: fixed;\n  inset: 0;\n  width: 100vw;\n  height: 100vh;\n  z-index: 1;\n}\nbody.page-only #ntp-overlay {\n  position: fixed;\n  inset: 0;\n}\n" },
+  "devtools.css": { mime:"text/css", text:"#safari-inspector{position:fixed;z-index:9999;left:0;right:0;bottom:23px;height:42vh;min-height:230px;max-height:75vh;background:#1d1d1f;color:#eee;border-top:1px solid #555;box-shadow:0 -8px 30px #0006;display:none;flex-direction:column;font:12px -apple-system,BlinkMacSystemFont,sans-serif;user-select:text}#safari-inspector.visible{display:flex}.si-head{height:38px;display:flex;align-items:center;justify-content:space-between;padding:0 12px;background:#29292c;border-bottom:1px solid #444}.si-head small{font-weight:400;color:#aaa;margin-left:8px}.si-head button,.si-toolbar button{background:#3a3a3d;color:#eee;border:1px solid #555;border-radius:5px;padding:4px 9px;cursor:pointer}.si-tabs{height:34px;display:flex;padding:0 9px;background:#242427;border-bottom:1px solid #444}.si-tabs button{background:none;color:#aaa;border:0;border-bottom:2px solid transparent;padding:0 14px;cursor:pointer}.si-tabs button.active{color:#fff;border-bottom-color:#0a84ff}.si-body{flex:1;min-height:0;overflow:hidden}.si-view{height:100%;display:flex;min-height:0}.si-view:not(#si-elements){display:none}.si-tree{width:54%;overflow:auto;padding:9px;border-right:1px solid #444;font:12px ui-monospace,monospace}.si-details{flex:1;overflow:auto;padding:12px}.si-node{padding-left:calc(var(--d)*12px);line-height:21px;white-space:nowrap}.si-node button{background:none;border:0;color:#d8d8dc;cursor:pointer;font:inherit}.si-node button:hover{background:#38383c}.si-node i{color:#91c8ff;font-style:normal}.si-node em{color:#aaa;font-style:normal}.si-empty{color:#999;padding:15px}.si-details h3{color:#91c8ff;font:14px ui-monospace}.si-details h4{border-top:1px solid #444;padding:8px 0 4px;margin:7px 0;color:#bbb}.si-details label{display:flex;gap:8px;align-items:center;margin:3px 0;color:#aaa}.si-details label input{flex:1;min-width:0;background:#29292d;border:1px solid #48484d;color:#eee;padding:4px;border-radius:3px}.si-details pre{white-space:pre-wrap;overflow-wrap:anywhere;max-height:90px;overflow:auto;color:#aaa;background:#252528;padding:6px}.si-details #si-remove{margin-top:10px;background:#542e30;color:#ffb8ba;border:1px solid #88474b;padding:6px;border-radius:4px}.si-list{flex-direction:column;overflow:hidden}.si-toolbar{height:34px;display:flex;align-items:center;gap:12px;padding:0 10px;color:#aaa;border-bottom:1px solid #444}.si-toolbar button.active{background:#075ba9}.si-row{display:grid;grid-template-columns:100px minmax(0,1fr) 100px;gap:10px;padding:6px 10px;border-bottom:1px solid #38383b;font:12px ui-monospace,monospace}.si-row span:nth-child(2){overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.si-headrow{color:#aaa;background:#252528}.si-log{display:flex;gap:12px;padding:5px 10px;border-bottom:1px solid #333;font:12px ui-monospace,monospace}.si-log time{color:#888;min-width:78px}.si-log.error{color:#ff8c8c}.si-log.warn{color:#f4ce7a}.si-log.info{color:#91c8ff}#si-console-list,#si-network-list,#si-resource-list{overflow:auto;flex:1}.si-foot{height:23px;display:flex;justify-content:space-between;padding:4px 10px;background:#252528;border-top:1px solid #444;color:#999;font-size:10px}@media(max-width:650px){#safari-inspector{height:55vh}.si-tree{width:45%}.si-row{grid-template-columns:65px minmax(0,1fr) 70px}}" },
+  "libcurl-bridge.js": { mime:"text/javascript", text:"/* Bridges libcurl.js's top-level lexical binding into the GX adapter.\n * Keep this as a separate classic script loaded only after libcurl.js.\n */\n(function () {\n  \"use strict\";\n  if (typeof libcurl === \"undefined\") {\n    throw new Error(\"libcurl.js loaded without exposing its libcurl binding\");\n  }\n  if (window.GXLibcurl && window.GXLibcurl !== libcurl) {\n    throw new Error(\"A different libcurl runtime is already registered\");\n  }\n  window.GXLibcurl = libcurl;\n})();\n" },
+  "wisp-manager.js": { mime:"text/javascript", text:"/* GX Wisp networking adapter.\n * Relay pool/selection behavior adapted from GUST-XK-IMPROVED.html.\n * HTTPS transport: libcurl.js 0.7.4 (ading2210), LGPL-3.0-or-later.\n * Runtime is pinned to the upstream 0.7.4 browser JS + WASM files on jsDelivr.\n */\n(() => {\n  \"use strict\";\n  const DEFAULTS = [\n  \"wss://wisp.terbiumon.top/wisp/\",\n  \"wss://wisp.rhw.one/wisp/\",\n  \"wss://definitelyscience.com/wisp/\",\n  \"wss://mages.io/wisp/\",\n  \"wss://lichology.com/wisp/\",\n  \"wss://motor-cycle-part.org/wisp/\",\n  \"wss://area.forwardersoft.com/wisp/\",\n  \"wss://truf.the-nest.at/wisp/\",\n  \"wss://thoughts.forwardersoft.com/wisp/\",\n  \"wss://anura.pro/\",\n  \"wss://wisp.mercurywork.shop/\",\n  \"wss://nebulaproxy.io/wisp/\",\n  \"wss://invisiproxy.com/wisp/\",\n  \"wss://english.algebra.teacher.vocabulary.homework.forwardersoft.com/wisp/\"\n];\n  const STORE = {\n    preferred: \"gx:wisp:v1\",\n    fastest: \"gx:wisp:fastest:v1\",\n    health: \"gx:wisp:health:v1\",\n    custom: \"gx:fallback:wisp\"\n  };\n  const COOLDOWN_MS = 5 * 60 * 1000;\n  const TIMEOUT_MS = 9000;\n  const RUNTIME_STATE_KEY = \"__GX_LIBCURL_RUNTIME_V1__\";\n  let activeRelay = \"\";\n  let requestQueue = Promise.resolve();\n  const sessions = new Map();\n\n  const storage = {\n    get(key) { try { return localStorage.getItem(key); } catch (_) { return null; } },\n    set(key, value) { try { localStorage.setItem(key, value); } catch (_) {} }\n  };\n  function readHealth() {\n    try { return JSON.parse(storage.get(STORE.health) || \"{}\"); } catch (_) { return {}; }\n  }\n  function writeHealth(value) { storage.set(STORE.health, JSON.stringify(value)); }\n  function hostOf(url) { try { return new URL(url).hostname; } catch (_) { return \"unknown\"; } }\n  function getWispPool() {\n    return [...new Set([\n      ...DEFAULTS,\n      storage.get(STORE.preferred),\n      storage.get(STORE.fastest),\n      storage.get(STORE.custom)\n    ].filter(Boolean))];\n  }\n  function rankPoolCandidates(host) {\n    const health = readHealth();\n    const now = Date.now();\n    const preferred = storage.get(STORE.preferred) || DEFAULTS[0];\n    const fastest = storage.get(STORE.fastest);\n    return getWispPool().map((url, index) => {\n      const item = health[url] && health[url][host] || {};\n      return { url, index, latency: Number(item.latency) || 0,\n        failedUntil: Number(item.failedUntil) || 0,\n        preferred: url === preferred, fastest: url === fastest };\n    }).filter(x => x.failedUntil <= now)\n      .sort((a, b) => Number(b.preferred) - Number(a.preferred)\n        || Number(b.fastest) - Number(a.fastest)\n        || (a.latency && b.latency ? a.latency - b.latency : a.latency ? -1 : b.latency ? 1 : a.index - b.index));\n  }\n  function rememberResult(url, host, ok, latency) {\n    const health = readHealth();\n    health[url] = health[url] || {};\n    health[url][host] = ok\n      ? { latency: Math.round(latency), failedUntil: 0, lastOk: Date.now() }\n      : { ...(health[url][host] || {}), failedUntil: Date.now() + COOLDOWN_MS, lastFail: Date.now() };\n    writeHealth(health);\n    if (ok) storage.set(STORE.fastest, url);\n  }\n  async function ensureRuntime() {\n    // libcurl_full.js is loaded once by index.html, before this adapter.\n    // libcurl-bridge.js exposes GX's top-level lexical const as window.GXLibcurl.\n    const runtime = window.GXLibcurl;\n    if (!runtime) throw new Error(\"GX libcurl runtime was not loaded; check libcurl_full.js and libcurl-bridge.js\");\n    if (!runtime.ready) await runtime.load_wasm();\n    if (!runtime.ready) throw new Error(\"GX libcurl WASM initialization did not complete\");\n    return runtime;\n  }\n  function getSession(libcurl, relay) {\n    let session = sessions.get(relay);\n    if (!session) {\n      session = new libcurl.HTTPSession({ enable_cookies: true });\n      session.set_connections(24, 18, 8);\n      sessions.set(relay, session);\n    }\n    return session;\n  }\n  async function fetchOnce(libcurl, relay, url, options) {\n    libcurl.set_websocket(relay);\n    const session = getSession(libcurl, relay);\n    const controller = new AbortController();\n    const externalSignal = options && options.signal;\n    const onAbort = () => controller.abort();\n    if (externalSignal) {\n      if (externalSignal.aborted) controller.abort();\n      else externalSignal.addEventListener(\"abort\", onAbort, { once: true });\n    }\n    const timeout = setTimeout(() => controller.abort(), TIMEOUT_MS);\n    const started = performance.now();\n    try {\n      const fetchOptions = { ...(options || {}), signal: controller.signal };\n      const response = await session.fetch(url, fetchOptions);\n      const bytes = await response.arrayBuffer();\n      const latency = performance.now() - started;\n      rememberResult(relay, hostOf(url), true, latency);\n      activeRelay = relay;\n      return new Response(bytes, { status: response.status, statusText: response.statusText, headers: response.headers });\n    } catch (error) {\n      rememberResult(relay, hostOf(url), false, 0);\n      try { session.close(); } catch (_) {}\n      sessions.delete(relay);\n      throw error;\n    } finally {\n      clearTimeout(timeout);\n      if (externalSignal) externalSignal.removeEventListener(\"abort\", onAbort);\n    }\n  }\n  async function fetchInternal(url, options = {}) {\n    const libcurl = await ensureRuntime();\n    const host = hostOf(url);\n    const candidates = rankPoolCandidates(host);\n    if (activeRelay) candidates.sort((a, b) => Number(b.url === activeRelay) - Number(a.url === activeRelay));\n    if (!candidates.length) throw new Error(\"No Wisp relays are currently eligible; wait for cooldown or reset the relay pool.\");\n    const errors = [];\n    for (const candidate of candidates) {\n      try {\n        return await fetchOnce(libcurl, candidate.url, url, options);\n      } catch (error) {\n        errors.push(candidate.url + \": \" + (error && error.message || error));\n      }\n    }\n    throw new Error(\"Every GX Wisp relay failed. \" + errors.join(\" | \"));\n  }\n  function fetch(url, options = {}) {\n    const run = requestQueue.then(() => fetchInternal(url, options));\n    requestQueue = run.catch(() => {});\n    return run;\n  }\n  function setPreferred(url) {\n    const value = String(url || \"\").trim();\n    if (!value) { storage.set(STORE.preferred, \"\"); return; }\n    if (!/^wss:\\/\\//i.test(value)) throw new Error(\"Wisp relay must begin with wss://\");\n    storage.set(STORE.preferred, value.replace(/\\s+/g, \"\"));\n    activeRelay = \"\";\n  }\n  function openSettings() {\n    const current = storage.get(STORE.preferred) || activeRelay || DEFAULTS[0];\n    const answer = window.prompt(\n      \"Preferred Wisp relay (wss://...). Leave blank to use the GX relay pool.\\n\\nGX defaults: \" + DEFAULTS.length,\n      current\n    );\n    if (answer === null) return;\n    if (!answer.trim()) {\n      storage.set(STORE.preferred, \"\");\n      storage.set(STORE.fastest, \"\");\n      alert(\"GX Wisp default pool restored.\");\n      return;\n    }\n    try {\n      setPreferred(answer);\n      alert(\"Preferred Wisp relay saved. It will be tested on the next navigation.\");\n    } catch (error) { alert(error.message); }\n  }\n  window.GXWisp = {\n    defaults: DEFAULTS.slice(),\n    fetch,\n    ensureRuntime,\n    getWispPool,\n    get activeRelay() { return activeRelay; },\n    openSettings,\n    reset() {\n      storage.set(STORE.preferred, \"\");\n      storage.set(STORE.fastest, \"\");\n      storage.set(STORE.health, \"{}\");\n      activeRelay = \"\";\n      for (const session of sessions.values()) { try { session.close(); } catch (_) {} }\n      sessions.clear();\n    }\n  };\n})();" },
+  "script.js": { mime:"text/javascript", text:"(() => {\n  \"use strict\";\n\n  // Navigation and page requests use the GX Wisp transport.\n  \n  const HOMEPAGE = \"about:home\";\n  const endpointParams = new URLSearchParams(window.location.search);\n  const endpointTarget = endpointParams.has(\"p\") ? normalizeEndpointTarget(endpointParams.get(\"p\")) : \"\";\n  const pageOnlyMode = endpointParams.get(\"f\") === \"1\";\n\n  function normalizeEndpointTarget(value) {\n    const raw = String(value || \"\").trim();\n    if (!raw) return \"\";\n    return normalizeUrl(raw);\n  }\n  \n  const DEFAULTS = {\n    favorites: [\n      { url: \"https://www.apple.com\", title: \"Apple\", icon: \"https://www.apple.com/favicon.ico\" },\n      { url: \"https://en.uncyclopedia.co/\", title: \"Uncyclopedia\", icon: \"https://upload.wikimedia.org/wikipedia/commons/8/80/Wikipedia-logo-v2.svg\" },\n      { url: \"https://www.bing.com/\", title: \"Bing\", icon: \"https://upload.wikimedia.org/wikipedia/commons/9/9c/Bing_Fluent_Logo.svg\" },\n      { url: \"https://www.amazon.com\", title: \"Amazon\", icon: \"https://upload.wikimedia.org/wikipedia/commons/4/4a/Amazon_icon.svg\" },\n      { url: \"https://kick.com/browse\", title: \"Kick\", icon: \"https://emoji.discadia.com/emojis/34d2e9b2-b9bd-4a49-95c0-0f22fb78fc36.PNG\" },\n      { url: \"https://discord.com\", title: \"Discord\", icon: \"https://freelogopng.com/images/all_img/1691730813discord-icon-png.png\" },\n      { url: \"https://www.reddit.com\", title: \"Reddit\", icon: \"https://www.redditstatic.com/desktop2x/img/favicon/favicon-96x96.png\" },\n      { url: \"https://store.steampowered.com\", title: \"Steam\", icon: \"https://upload.wikimedia.org/wikipedia/commons/8/83/Steam_icon_logo.svg\" },\n      { url: \"https://github.com\", title: \"GitHub\", icon: \"https://upload.wikimedia.org/wikipedia/commons/c/c2/GitHub_Invertocat_Logo.svg\" }\n    ]\n  };\n\n  const $ = s => document.querySelector(s);\n  const escape = s => (s||\"\").replace(/&/g, \"&amp;\").replace(/</g, \"&lt;\").replace(/>/g, \"&gt;\");\n  \n  function getFavicon(url) {\n    if (!url || url.startsWith(\"about:\") || url.startsWith(\"data:\")) return \"\";\n    const fav = favorites.find(f => f.url === url);\n    if (fav && fav.icon) return fav.icon;\n    try { return `https://www.google.com/s2/favicons?domain=${new URL(url).hostname}&sz=32`; } catch { return \"\"; }\n  }\n\n  function syncTopSite(tab) {\n    if (!tab || tab.id !== activeTabId) return;\n    const title = tab.title || (() => { try { return new URL(tab.url).hostname; } catch (_) { return \"Safari\"; } })();\n    if (document.title !== title) document.title = title;\n    let icon = document.querySelector('link#active-page-favicon');\n    if (!icon) {\n      icon = document.createElement(\"link\");\n      icon.id = \"active-page-favicon\";\n      icon.rel = \"icon\";\n      document.head.appendChild(icon);\n    }\n    const favicon = tab.favicon || getFavicon(tab.url);\n    if (favicon) {\n      if (icon.href !== favicon) icon.href = favicon;\n    } else {\n      icon.removeAttribute(\"href\");\n    }\n  }\n\n  function normalizeUrl(input) {\n    let s = String(input || \"\").trim();\n    if (!s) return \"about:blank\";\n    if (s === \"about:home\") return s;\n    if (s.startsWith(\"data:\")) return s;\n    if (/^https?:\\/\\//i.test(s)) {\n      try {\n        const parsed = new URL(s);\n        if (parsed.hostname === \"duckduckgo.com\" || parsed.hostname === \"www.duckduckgo.com\") {\n          if (!parsed.pathname) parsed.pathname = \"/\";\n          return parsed.href;\n        }\n      } catch (_) {}\n      return s;\n    }\n    if (s.includes(\".\") && !s.includes(\" \")) return \"https://\" + s;\n    return `https://www.bing.com/search?q=${encodeURIComponent(s)}`;\n  }\n\n  let tabs = [];\n  let activeTabId = null;\n  let favorites = [...DEFAULTS.favorites];\n  let isLightMode = false;\n\n  // --- INITIALIZATION: Create Overlay for Start Page ---\n  // We do this to ensure the start page uses the main window's CSS\n  // which fixes the \"broken style\" issue on local files.\n  const webContent = $(\"#web-content\");\n  const startPageOverlay = document.createElement(\"div\");\n  startPageOverlay.id = \"ntp-overlay\";\n  startPageOverlay.style.display = \"none\";\n  startPageOverlay.style.width = \"100%\";\n  startPageOverlay.style.height = \"100%\";\n  startPageOverlay.style.position = \"absolute\";\n  startPageOverlay.style.top = \"0\";\n  startPageOverlay.style.zIndex = \"50\";\n  webContent.appendChild(startPageOverlay);\n\n  // Helper to grab CSS variables from the root for injection into iframes\n  function getThemeColors() {\n      const style = getComputedStyle(document.documentElement);\n      return {\n          bg: style.getPropertyValue('--menu-bg').trim(),\n          text: style.getPropertyValue('--tab-text').trim(),\n          shadow: style.getPropertyValue('--shadow').trim(),\n          accent: style.getPropertyValue('--accent').trim()\n      };\n  }\n\n  async function fetchWithTimeout(resource, options = {}) {\n    const { timeout = 8000 } = options;\n    const controller = new AbortController();\n    const id = setTimeout(() => controller.abort(), timeout);\n    const response = await fetch(resource, { ...options, signal: controller.signal });\n    clearTimeout(id);\n    return response;\n  }\n\n  function injectWispBridge(html) {\n    const bridge = '<script>(function(){try{' +\n      'var pending=new Map(),nextId=0,nativeFetch=window.fetch.bind(window);' +\n      'window.addEventListener(\"message\",function(ev){var d=ev.data;if(!d||d.type!==\"wisp:fetch:response\")return;var p=pending.get(d.id);if(!p)return;pending.delete(d.id);if(d.error){p.reject(new TypeError(d.error));return;}try{var rb=(d.body&&d.body.byteLength)?new Uint8Array(d.body):null;if(d.status===204||d.status===205||d.status===304)rb=null;p.resolve(new Response(rb,{status:d.status,statusText:d.statusText,headers:d.headers||[]}));}catch(err){p.reject(err);}});' +\n      'window.fetch=async function(input,init){var req=input instanceof Request?input:null;var url=new URL(req?req.url:String(input),document.baseURI);if(url.protocol!==\"http:\"&&url.protocol!==\"https:\")return nativeFetch(input,init);var method=(init&&init.method)||(req&&req.method)||\"GET\";var headers=new Headers(req?req.headers:undefined);if(init&&init.headers)new Headers(init.headers).forEach(function(v,k){headers.set(k,v);});var body=init&&Object.prototype.hasOwnProperty.call(init,\"body\")?init.body:undefined;if(body===undefined&&req&&method!==\"GET\"&&method!==\"HEAD\")body=await req.clone().arrayBuffer();if(body instanceof URLSearchParams){if(!headers.has(\"content-type\"))headers.set(\"content-type\",\"application/x-www-form-urlencoded;charset=UTF-8\");body=body.toString();}if(body instanceof Blob)body=await body.arrayBuffer();var id=++nextId;var opts={method:method,headers:Array.from(headers.entries()),credentials:(init&&init.credentials)||(req&&req.credentials)||\"same-origin\",redirect:(init&&init.redirect)||(req&&req.redirect)||\"follow\"};return new Promise(function(resolve,reject){pending.set(id,{resolve:resolve,reject:reject});var msg={type:\"wisp:fetch\",id:id,url:url.href,options:opts,body:body};try{window.parent.postMessage(msg,\"*\",body instanceof ArrayBuffer?[body]:[]);}catch(err){pending.delete(id);reject(err);}});};' +\n      'document.addEventListener(\"click\",function(ev){var a=ev.target.closest&&ev.target.closest(\"a[href]\");if(!a||a.hasAttribute(\"download\"))return;var target=a.getAttribute(\"target\");if(target&&target!==\"_self\")return;var u=new URL(a.href,document.baseURI);if(u.protocol!==\"http:\"&&u.protocol!==\"https:\")return;var b=new URL(document.baseURI);if(u.origin===b.origin&&u.pathname===b.pathname&&u.search===b.search)return;ev.preventDefault();window.parent.postMessage({type:\"nav\",url:u.href},\"*\");},true);' +\n      'document.addEventListener(\"submit\",function(ev){var f=ev.target;if(!f||String(f.method||\"get\").toLowerCase()!==\"get\")return;var u=new URL(f.action||document.baseURI,document.baseURI);var q=new URLSearchParams(new FormData(f));u.search=q.toString();ev.preventDefault();window.parent.postMessage({type:\"nav\",url:u.href},\"*\");},true);' +\n      '}catch(e){console.warn(\"Wisp page bridge:\",e);}})();</script>';\n    const inspector = `<script>\n(function(){\n if(window.__safariInspectorInstalled)return;window.__safariInspectorInstalled=true;\n var ids=new WeakMap(),byId={},next=0,inspectMode=false;\n function idFor(n){if(!ids.has(n)){ids.set(n,++next);byId[next]=n;}return ids.get(n);}\n function pathFor(el){var p=[],n=el;while(n&&n.nodeType===1&&n!==document.documentElement){var par=n.parentElement;if(!par)break;p.unshift(Array.prototype.indexOf.call(par.children,n));n=par;}return p;}\n function send(type,data){try{parent.postMessage({type:type,data:data||{}},\"*\");}catch(e){}}\n function describe(n,depth){if(!n||n.nodeType!==1)return null;var a={};Array.prototype.slice.call(n.attributes||[]).slice(0,40).forEach(function(x){a[x.name]=x.value;});var o={id:idFor(n),tag:n.tagName.toLowerCase(),attrs:a,text:n.children.length?\"\":(n.textContent||\"\").trim().slice(0,150),path:pathFor(n),children:[]};if(depth>0)Array.prototype.slice.call(n.children||[]).slice(0,70).forEach(function(c){var x=describe(c,depth-1);if(x)o.children.push(x);});return o;}\n function snapshot(){try{var icon=document.querySelector('link[rel~=\"icon\"],link[rel=\"shortcut icon\"]');send(\"inspector:dom\",{tree:describe(document.documentElement,8),url:location.href,title:document.title,favicon:icon?(icon.href||icon.getAttribute(\"href\")||\"\"):\"\"});}catch(e){send(\"inspector:error\",{message:String(e)});}}\n var timer;function changed(){clearTimeout(timer);timer=setTimeout(snapshot,200);}\n try{new MutationObserver(changed).observe(document.documentElement,{subtree:true,childList:true,attributes:true,characterData:true});}catch(e){}\n function selected(el){var s=getComputedStyle(el),styles={};[\"display\",\"position\",\"width\",\"height\",\"margin\",\"padding\",\"color\",\"backgroundColor\",\"fontSize\",\"fontFamily\",\"border\",\"opacity\",\"zIndex\",\"overflow\"].forEach(function(k){styles[k]=s[k];});var attrs={};Array.prototype.slice.call(el.attributes||[]).forEach(function(a){attrs[a.name]=a.value;});send(\"inspector:selected\",{id:idFor(el),tag:el.tagName.toLowerCase(),attrs:attrs,text:(el.textContent||\"\").trim().slice(0,300),path:pathFor(el),styles:styles,html:el.outerHTML.slice(0,3500)});}\n document.addEventListener(\"click\",function(e){if(!inspectMode)return;e.preventDefault();e.stopPropagation();selected(e.target);},true);\n [\"log\",\"info\",\"warn\",\"error\",\"debug\"].forEach(function(k){var orig=console[k];console[k]=function(){try{send(\"inspector:console\",{level:k,args:Array.prototype.slice.call(arguments).map(function(v){try{return typeof v===\"string\"?v:JSON.stringify(v);}catch(e){return String(v);}}).join(\" \"),time:Date.now()});}catch(e){}return orig.apply(console,arguments);};});\n addEventListener(\"error\",function(e){send(\"inspector:console\",{level:\"error\",args:(e.message||\"Script error\")+\" · \"+(e.filename||\"\")+\":\"+(e.lineno||0),time:Date.now()});});\n addEventListener(\"unhandledrejection\",function(e){send(\"inspector:console\",{level:\"error\",args:\"Unhandled rejection: \"+String(e.reason),time:Date.now()});});\n try{new PerformanceObserver(function(list){list.getEntries().forEach(function(e){send(\"inspector:resource\",{name:e.name,type:e.initiatorType||\"resource\",duration:Math.round(e.duration),size:e.transferSize||0});});}).observe({type:\"resource\",buffered:true});}catch(e){}\n addEventListener(\"message\",function(e){var d=e.data;if(!d||d.type!==\"inspector:command\")return;var a=d.data||{},el;try{if(a.action===\"snapshot\")snapshot();else if(a.action===\"inspect-mode\"){inspectMode=!!a.enabled;document.documentElement.style.cursor=inspectMode?\"crosshair\":\"\";}else if(a.action===\"highlight\"){el=(function(p){var n=document.documentElement;(p||[]).forEach(function(i){n=n&&n.children[i];});return n;})(a.path);if(el){el.scrollIntoView({block:\"center\"});el.style.outline=\"2px solid #0a84ff\";setTimeout(function(){el.style.outline=\"\";},1000);}}else if(a.action===\"select-by-id\"){el=byId[a.id];if(el)selected(el);}else if(a.action===\"set-style\"){el=document.documentElement;(a.path||[]).forEach(function(i){el=el&&el.children[i];});if(el)el.style.setProperty(a.name.replace(/[A-Z]/g,function(m){return \"-\"+m.toLowerCase();}),a.value);changed();}else if(a.action===\"set-attr\"){el=document.documentElement;(a.path||[]).forEach(function(i){el=el&&el.children[i];});if(el)el.setAttribute(a.name,a.value);changed();}else if(a.action===\"remove\"){el=document.documentElement;(a.path||[]).forEach(function(i){el=el&&el.children[i];});if(el&&el!==document.documentElement)el.remove();changed();}}catch(err){send(\"inspector:error\",{message:String(err)});}});\n function reportExtras(){\n  try{var items=[];Array.prototype.slice.call(document.scripts||[]).forEach(function(x,i){items.push({kind:\"script\",url:x.src||\"\",name:\"inline script \"+(i+1),preview:x.src?\"\":(x.textContent||\"\").slice(0,500)});});\n  Array.prototype.slice.call(document.querySelectorAll(\"link[rel~='stylesheet'],style\")).forEach(function(x,i){items.push({kind:\"stylesheet\",url:x.href||\"\",name:\"inline style \"+(i+1),preview:x.tagName===\"STYLE\"?(x.textContent||\"\").slice(0,350):\"\"});});send(\"inspector:sources\",{items:items});}catch(e){}\n  var storage={localStorage:{},sessionStorage:{},cookies:\"\"};try{for(var i=0;i<localStorage.length;i++){var k=localStorage.key(i);storage.localStorage[k]=localStorage.getItem(k);}}catch(e){storage.localStorageUnavailable=String(e);}\n  try{for(var j=0;j<sessionStorage.length;j++){var sk=sessionStorage.key(j);storage.sessionStorage[sk]=sessionStorage.getItem(sk);}}catch(e){storage.sessionStorageUnavailable=String(e);}\n  try{storage.cookies=document.cookie;}catch(e){storage.cookiesUnavailable=String(e);}send(\"inspector:storage\",storage);\n }\n send(\"inspector:ready\",{url:location.href});setTimeout(function(){snapshot();reportExtras();},250);\n})();\n</script>`;\n    return /<head\\b[^>]*>/i.test(html)\n      ? html.replace(/<head\\b[^>]*>/i, head => head + bridge + inspector)\n      : bridge + inspector + html;\n  }\n  function renderStartPage() {\n      const favsHTML = favorites.map(f => `\n        <div class=\"fav-card\" onclick=\"window.navigateActiveTab('${f.url}')\">\n          <div class=\"fav-icon\"><img src=\"${f.icon}\"></div>\n          <div class=\"fav-label\">${f.title}</div>\n        </div>`).join('');\n\n      startPageOverlay.innerHTML = `\n        <div class=\"internal-page\">\n          <div class=\"start-container\">\n            <div class=\"section-title\">Favorites</div>\n            <div class=\"favorites-grid\">${favsHTML}</div>\n            \n            <div class=\"section-title\">Privacy Report</div>\n            <div class=\"privacy-card\">\n              <svg class=\"shield-big\" viewBox=\"0 0 24 24\"><path d=\"M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z\"/></svg>\n              <div class=\"privacy-text\">\n                <h3>0 Trackers Prevented</h3>\n                <p>Your IP address was hidden from known trackers.</p>\n              </div>\n            </div>\n          </div>\n        </div>`;\n  }\n\n  // Convert static page assets into data URLs fetched through GX Wisp.\n  // This avoids browser CORS failures for resources embedded in srcdoc pages.\n  function bytesToDataUrl(bytes, mime) {\n    const data = new Uint8Array(bytes);\n    let binary = \"\";\n    for (let i = 0; i < data.length; i += 0x8000) {\n      binary += String.fromCharCode.apply(null, data.subarray(i, Math.min(i + 0x8000, data.length)));\n    }\n    return \"data:\" + (mime || \"application/octet-stream\") + \";base64,\" + btoa(binary);\n  }\n\n  async function rewriteCssAssets(css, cssUrl, depth = 0) {\n    if (depth > 2) return css;\n    const matches = [...css.matchAll(/url\\(\\s*(['\"]?)(.*?)\\1\\s*\\)/gi)];\n    for (const match of matches) {\n      const raw = match[2].trim();\n      if (!raw || /^(data:|blob:|#)/i.test(raw)) continue;\n      let assetUrl;\n      try { assetUrl = new URL(raw, cssUrl).href; } catch (_) { continue; }\n      if (!/^https?:\\/\\//i.test(assetUrl)) continue;\n      try {\n        const response = await GXWisp.fetch(assetUrl);\n        if (!response.ok) continue;\n        const bytes = await response.arrayBuffer();\n        if (bytes.byteLength > 8 * 1024 * 1024) continue;\n        let dataUrl = bytesToDataUrl(bytes, response.headers.get(\"content-type\") || \"application/octet-stream\");\n        if (/\\.css(?:[?#]|$)/i.test(assetUrl) || /text\\/css/i.test(response.headers.get(\"content-type\") || \"\")) {\n          const nested = await rewriteCssAssets(new TextDecoder().decode(bytes), assetUrl, depth + 1);\n          dataUrl = \"data:text/css;base64,\" + btoa(unescape(encodeURIComponent(nested)));\n        }\n        css = css.replace(match[0], \"url('\" + dataUrl + \"')\");\n      } catch (error) {\n        console.warn(\"GX Wisp CSS asset failed:\", assetUrl, error);\n      }\n    }\n    return css;\n  }\n\n  async function rewriteStaticAssets(html, pageUrl) {\n    const doc = new DOMParser().parseFromString(html, \"text/html\");\n    doc.querySelectorAll('meta[http-equiv=\"Content-Security-Policy\" i]').forEach(node => node.remove());\n    const nodes = [...doc.querySelectorAll(\"script[src],link[rel~='stylesheet'][href],link[rel~='preload'][href],link[rel~='icon'][href],img[src],source[src],video[poster]\")];\n    for (const node of nodes) {\n      const attr = node.hasAttribute(\"poster\") ? \"poster\" : node.hasAttribute(\"src\") ? \"src\" : \"href\";\n      const raw = node.getAttribute(attr);\n      if (!raw || /^(data:|blob:|javascript:|#)/i.test(raw)) continue;\n      let assetUrl;\n      try { assetUrl = new URL(raw, pageUrl).href; } catch (_) { continue; }\n      if (!/^https?:\\/\\//i.test(assetUrl)) continue;\n      // Module scripts can contain relative imports, so leave them to the page's fetch bridge.\n      if (node.tagName === \"SCRIPT\" && node.type === \"module\") continue;\n      try {\n        const response = await GXWisp.fetch(assetUrl);\n        if (!response.ok) continue;\n        const bytes = await response.arrayBuffer();\n        if (bytes.byteLength > 8 * 1024 * 1024) continue;\n        const mime = response.headers.get(\"content-type\") || (node.tagName === \"SCRIPT\" ? \"text/javascript\" : \"application/octet-stream\");\n        let dataUrl;\n        if (node.tagName === \"LINK\" && /css/i.test(node.rel)) {\n          const css = await rewriteCssAssets(new TextDecoder().decode(bytes), assetUrl);\n          dataUrl = \"data:text/css;base64,\" + btoa(unescape(encodeURIComponent(css)));\n        } else {\n          dataUrl = bytesToDataUrl(bytes, mime);\n        }\n        node.setAttribute(attr, dataUrl);\n      } catch (error) {\n        console.warn(\"GX Wisp page asset failed:\", assetUrl, error);\n      }\n    }\n    for (const style of doc.querySelectorAll(\"style\")) {\n      style.textContent = await rewriteCssAssets(style.textContent || \"\", pageUrl);\n    }\n    for (const node of doc.querySelectorAll(\"[style]\")) {\n      node.setAttribute(\"style\", await rewriteCssAssets(node.getAttribute(\"style\") || \"\", pageUrl));\n    }\n    return \"<!doctype html>\\n\" + doc.documentElement.outerHTML;\n  }\n\n  async function navigate(tab, url) {\n    tab.title = url === HOMEPAGE ? \"Start Page\" : (() => { try { return new URL(url).hostname; } catch (_) { return \"Loading\"; } })();\n    tab.favicon = \"\";\n    try {\n      const parsed = new URL(url);\n      if (parsed.hostname === \"duckduckgo.com\" || parsed.hostname === \"www.duckduckgo.com\") {\n        if (!parsed.pathname) parsed.pathname = \"/\";\n        url = parsed.href;\n      }\n    } catch (_) {}\n    tab.loading = true;\n    tab.url = url;\n    updateUI();\n\n    // 1. START PAGE HANDLING\n    if (url === \"about:home\") {\n        renderStartPage();\n        finishLoad(tab, \"Start Page\");\n        return;\n    }\n\n    if (url.startsWith(\"data:\")) {\n       renderInternal(tab, \"Data\", null);\n       setTimeout(() => { $(`#frame-${tab.id}`).src = url; }, 10);\n       finishLoad(tab, \"Data\");\n       return;\n    }\n\n    try {\n       const response = await GXWisp.fetch(url);\n       if (!response.ok) throw new Error(\"Upstream returned HTTP \" + response.status);\n       let content = await response.text();\n       content = await rewriteStaticAssets(content, url);\n       const base = new URL(url).origin;\n       if (!content.toLowerCase().includes(\"<base\")) {\n         if (content.toLowerCase().includes(\"<head\")) content = content.replace(/<head[^>]*>/i, `$&<base href=\"${url}\">`);\n         else content = `<base href=\"${url}\">` + content;\n       }\n\n       content = injectWispBridge(content);\n       const frame = $(`#frame-${tab.id}`);\n       frame.removeAttribute(\"srcdoc\");\n       frame.srcdoc = content;\n       frame.style.background = \"#fff\";\n       frame.sandbox = \"allow-forms allow-scripts allow-popups allow-modals\";\n       \n       const m = content.match(/<title[^>]*>([\\s\\S]*?)<\\/title>/i);\n       const title = m ? m[1].trim() : new URL(url).hostname;\n       finishLoad(tab, title);\n\n    } catch (e) {\n       renderError(tab, url, \"All GX Wisp relays timed out, rejected the connection, or could not fetch this page.\");\n    }\n  }\n\n  function renderInternal(tab, title, html) {\n    const frame = $(`#frame-${tab.id}`);\n    frame.removeAttribute(\"src\");\n    frame.style.background = \"transparent\";\n    \n    // Inject Basic Styles for Error/Data pages since they are in iframe\n    const theme = getThemeColors();\n    const styleBlock = `\n      <style>\n        body { font-family: -apple-system, sans-serif; color: ${theme.text}; display:flex; justify-content:center; align-items:center; height:100vh; margin:0; }\n        .error-card { background: ${theme.bg}; padding: 40px; border-radius: 12px; box-shadow: ${theme.shadow}; text-align: center; max-width: 500px; backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(128,128,128,0.1); }\n        h2 { color: #FF3B30; margin-top: 0; }\n        button { background: ${theme.accent}; color: #fff; border: none; padding: 8px 20px; border-radius: 6px; cursor: pointer; margin-top: 20px; font-size: 13px; }\n      </style>\n    `;\n\n    if (html) {\n        frame.srcdoc = `<!doctype html><html><head>${styleBlock}</head><body>${html}</body></html>`;\n    }\n    finishLoad(tab, title);\n  }\n\n  function finishLoad(tab, title) {\n    tab.loading = false;\n    tab.title = title;\n    updateUI();\n  }\n\n  function renderError(tab, url, msg) {\n    renderInternal(tab, \"Connection Failed\", `\n      <div class=\"error-card\">\n        <h2>Safari cannot open the page</h2>\n        <p>The error was: \"${escape(msg)}\"</p>\n        <button onclick=\"window.parent.navigateActiveTab('${escape(url)}')\" >Reload</button>\n      </div>\n    `);\n  }\n\n  function createTab(url = HOMEPAGE) {\n    const id = \"t-\" + Math.random().toString(36).substr(2, 9);\n    const iframe = document.createElement(\"iframe\");\n    iframe.className = \"web-frame\";\n    iframe.id = \"frame-\" + id;\n    $(\"#web-content\").appendChild(iframe);\n\n    const tab = { id, url, title: \"Start Page\", favicon: \"\", loading: false, historyStack: [], historyIdx: -1 };\n    tabs.push(tab);\n    activateTab(id);\n    \n    tab.historyStack.push(url);\n    tab.historyIdx = 0;\n    navigate(tab, url);\n  }\n\n  function activateTab(id) {\n    activeTabId = id;\n    // Hide all iframes\n    document.querySelectorAll('.web-frame').forEach(f => f.style.display = 'none');\n    updateUI();\n  }\n\n  function closeTab(id) {\n    if (tabs.length === 1) { navigate(tabs[0], HOMEPAGE); return; }\n    const idx = tabs.findIndex(t => t.id === id);\n    $(`#frame-${id}`).remove();\n    tabs.splice(idx, 1);\n    if (activeTabId === id) activateTab(tabs[Math.max(0, idx - 1)].id);\n    else updateUI();\n  }\n\n  function updateUI() {\n    const container = $(\"#tabs-container\");\n    container.innerHTML = \"\";\n    \n    // 1. Manage Tabs Strip\n    const strip = $(\"#tabs-strip\");\n    if (tabs.length <= 1) {\n      strip.classList.add(\"hidden\");\n    } else {\n      strip.classList.remove(\"hidden\");\n    }\n\n    tabs.forEach(t => {\n      const el = document.createElement(\"div\");\n      el.className = `tab ${t.id === activeTabId ? 'active' : ''} ${t.loading ? 'loading' : ''}`;\n      \n      let favSrc = t.favicon || getFavicon(t.url);\n      if(t.url === \"about:home\") favSrc = \"\"; \n\n      const imgHtml = favSrc ? `<img class=\"tab-favicon\" src=\"${favSrc}\">` : '';\n\n      el.innerHTML = `\n        <div class=\"tab-icon-area\">\n          <div class=\"tab-spinner\"></div>\n          ${imgHtml}\n        </div>\n        <span class=\"tab-title\">${escape(t.title)}</span>\n        <button class=\"tab-close\" onclick=\"window.closeTab('${t.id}')\">×</button>\n      `;\n      el.onclick = (e) => { if(!e.target.classList.contains(\"tab-close\")) activateTab(t.id); };\n      container.appendChild(el);\n    });\n\n    syncTopSite(tabs.find(x => x.id === activeTabId));\n\n    // 2. Manage Content Visibility (Overlay vs Iframe)\n    const t = tabs.find(x => x.id === activeTabId);\n    if (t) {\n        if (t.url === \"about:home\") {\n            startPageOverlay.style.display = \"block\";\n            // Make sure the active iframe is hidden\n            if($(`#frame-${t.id}`)) $(`#frame-${t.id}`).style.display = \"none\";\n        } else {\n            startPageOverlay.style.display = \"none\";\n            // Show the active iframe\n            if($(`#frame-${t.id}`)) {\n                $(`#frame-${t.id}`).style.display = \"block\";\n                $(`#frame-${t.id}`).classList.add(\"active\");\n            }\n        }\n\n      $(\"#urlbar-input\").value = t.url === \"about:home\" ? \"\" : t.url;\n      const wrapper = $(\"#urlbar-wrapper\");\n      wrapper.classList.toggle(\"loading\", t.loading);\n      \n      $(\"#status-bar\").textContent = t.loading ? \"Loading...\" : \"Ready\";\n      $(\"#back-btn\").disabled = t.historyIdx <= 0;\n      $(\"#forward-btn\").disabled = t.historyIdx >= t.historyStack.length - 1;\n    }\n  }\n\n  function renderBookmarks() {\n    const list = $(\"#bookmarks-list\");\n    list.innerHTML = \"\";\n    favorites.forEach(f => {\n      const item = document.createElement(\"div\");\n      item.className = \"menu-item\";\n      item.innerHTML = `<img src=\"${f.icon}\"> ${escape(f.title)}`;\n      item.onclick = () => {\n          const t = tabs.find(x => x.id === activeTabId);\n          navigate(t, f.url);\n          $(\"#bookmarks-popup\").classList.remove(\"show\");\n      };\n      list.appendChild(item);\n    });\n  }\n\n  // --- GLOBAL HELPERS FOR HTML CLICKS ---\n  window.closeTab = (id) => { event.stopPropagation(); closeTab(id); };\n  window.navigateActiveTab = (url) => {\n      const t = tabs.find(x => x.id === activeTabId);\n      if(t) {\n          // Push to history\n          const norm = normalizeUrl(url);\n          t.historyStack = t.historyStack.slice(0, t.historyIdx + 1);\n          t.historyStack.push(norm);\n          t.historyIdx++;\n          navigate(t, norm);\n      }\n  };\n\n  window.addEventListener(\"message\", async (e) => {\n    const frame = Array.from(document.querySelectorAll(\"iframe.web-frame\")).find(item => item.contentWindow === e.source);\n    if (!frame || !e.data) return;\n    if (e.data.type === \"inspector:dom\" && e.data.data) {\n      const tab = tabs.find(item => item.id === frame.id.replace(\"frame-\", \"\"));\n      if (tab) {\n        const nextTitle = String(e.data.data.title || \"\").trim() || (() => { try { return new URL(tab.url).hostname; } catch (_) { return tab.title; } })();\n        const nextFavicon = typeof e.data.data.favicon === \"string\" ? e.data.data.favicon : \"\";\n        const changed = tab.title !== nextTitle || tab.favicon !== nextFavicon;\n        tab.title = nextTitle;\n        tab.favicon = nextFavicon;\n        if (tab.id === activeTabId) syncTopSite(tab);\n        if (changed) updateUI();\n      }\n      return;\n    }\n    if (e.data.type === \"nav\" && typeof e.data.url === \"string\") {\n      window.navigateActiveTab(e.data.url);\n      return;\n    }\n    if (e.data.type === \"wisp:fetch\" && typeof e.data.url === \"string\") {\n      try {\n        const options = { ...(e.data.options || {}) };\n        if (e.data.body !== undefined) options.body = e.data.body;\n        const response = await GXWisp.fetch(e.data.url, options);\n        const body = await response.arrayBuffer();\n        window.dispatchEvent(new CustomEvent(\"safari:wisp-response\", { detail: { id: e.data.id, url: e.data.url, status: response.status } }));\n        e.source.postMessage({ type: \"wisp:fetch:response\", id: e.data.id, status: response.status, statusText: response.statusText, headers: Array.from(response.headers.entries()), body }, \"*\", [body]);\n      } catch (error) {\n        window.dispatchEvent(new CustomEvent(\"safari:wisp-response\", { detail: { id: e.data.id, url: e.data.url, status: \"failed\" } }));\n        e.source.postMessage({ type: \"wisp:fetch:response\", id: e.data.id, error: String(error && error.message || error) }, \"*\");\n      }\n    }\n  });\n\n  $(\"#tab-strip-plus\").onclick = $(\"#toolbar-plus-btn\").onclick = $(\"#menu-new-tab\").onclick = () => { \n    $(\"#menu-popup\").classList.remove(\"show\"); \n    createTab(); \n  };\n  \n  $(\"#urlbar-input\").onkeydown = (e) => {\n    if (e.key === \"Enter\") {\n       window.navigateActiveTab($(\"#urlbar-input\").value);\n    }\n  };\n  $(\"#reload-btn\").onclick = () => { const t = tabs.find(x => x.id === activeTabId); navigate(t, t.url); };\n  $(\"#back-btn\").onclick = () => {\n    const t = tabs.find(x => x.id === activeTabId);\n    if(t.historyIdx > 0) { t.historyIdx--; navigate(t, t.historyStack[t.historyIdx]); }\n  };\n  $(\"#forward-btn\").onclick = () => {\n    const t = tabs.find(x => x.id === activeTabId);\n    if(t.historyIdx < t.historyStack.length-1) { t.historyIdx++; navigate(t, t.historyStack[t.historyIdx]); }\n  };\n  $(\"#home-btn\").onclick = () => { \n     const t = tabs.find(x => x.id === activeTabId); \n     navigate(t, HOMEPAGE); \n  };\n\n  $(\"#menu-btn\").onclick = (e) => { \n    e.stopPropagation(); \n    $(\"#bookmarks-popup\").classList.remove(\"show\");\n    $(\"#menu-popup\").classList.toggle(\"show\"); \n  };\n  \n  $(\"#bookmarks-btn\").onclick = (e) => {\n    e.stopPropagation();\n    $(\"#menu-popup\").classList.remove(\"show\");\n    $(\"#bookmarks-popup\").classList.toggle(\"show\");\n  };\n\n  document.addEventListener(\"click\", (e) => {\n    if (!$(\"#menu-btn\").contains(e.target) && !$(\"#menu-popup\").contains(e.target)) {\n       $(\"#menu-popup\").classList.remove(\"show\");\n    }\n    if (!$(\"#bookmarks-btn\").contains(e.target) && !$(\"#bookmarks-popup\").contains(e.target)) {\n       $(\"#bookmarks-popup\").classList.remove(\"show\");\n    }\n  });\n\n  $(\"#menu-theme-toggle\").onclick = () => {\n     isLightMode = !isLightMode;\n     document.body.classList.toggle(\"light-mode\", isLightMode);\n     $(\"#menu-theme-toggle\").textContent = isLightMode ? \"Switch to Dark Mode\" : \"Switch to Light Mode\";\n     \n     // Re-render Start Page to update wallpaper if needed\n     const t = tabs.find(x => x.id === activeTabId);\n     if(t.url === \"about:home\") {\n        renderStartPage();\n     }\n  };\n\n  const wispSettingsButton = $(\"#menu-wisp-settings\");\n  if (wispSettingsButton) wispSettingsButton.onclick = () => {\n    $(\"#menu-popup\").classList.remove(\"show\");\n    GXWisp.openSettings();\n  };\n  renderBookmarks();\n  if (pageOnlyMode) document.body.classList.add(\"page-only\");\n  createTab(endpointTarget || HOMEPAGE);\n\n})();\n/* =========================================================================\n   WebApp Protection\n   ========================================================================= */\n  if (window.top !== window.self) {\n    if (document.referrer && document.referrer.includes(\"typespectrum.com\")) {\n      try {\n        // Try to hijack the entire browser tab and redirect to your site\n        window.top.location.href = \"https://ywa.app\";\n      } catch (e) {\n        // If the browser blocks the hijack, absolutely nuke the iframe content\n        document.documentElement.innerHTML = `\n          <head>\n            <title>ERROR</title>\n          </head>\n          <body style=\"margin: 0; padding: 0; overflow: hidden;\">\n            <div style=\"position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background-color: #e50000; color: white; z-index: 2147483647; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; font-family: system-ui, -apple-system, sans-serif; padding: 20px; box-sizing: border-box;\">\n              <h1 style=\"font-size: clamp(24px, 5vw, 48px); margin: 0 0 15px 0; text-transform: uppercase; letter-spacing: 2px;\">\n                ⚠️ Error ⚠️\n              </h1>\n              <p style=\"font-size: clamp(16px, 3vw, 24px); margin: 0 0 10px 0; line-height: 1.5;\">\n                This WebApp can not be displayed here.\n              </p>\n              <p style=\"font-size: clamp(14px, 2.5vw, 20px); margin: 0; line-height: 1.5;\">\n                Possible Scam site detected</strong>.<br>\n                For security, Please visit ywa.app to use it.\n              </p>\n            </div>\n          </body>\n        `;\n      }\n    }\n  }" },
+  "devtools.js": { mime:"text/javascript", text:"(() => {\n\"use strict\";\nconst $=s=>document.querySelector(s),S={open:false,tab:\"elements\",tree:null,console:[],network:[],resources:[],inspect:false};\nconst panel=document.createElement(\"section\");panel.id=\"safari-inspector\";panel.innerHTML=`\n<header class=\"si-head\"><b>◉ Web Inspector <small>Safari developer tools</small></b><span><button id=\"si-clear\">Clear</button> <button id=\"si-close\">×</button></span></header>\n<nav class=\"si-tabs\"><button data-tab=\"elements\" class=\"active\">Elements</button><button data-tab=\"console\">Console</button><button data-tab=\"network\">Network</button><button data-tab=\"resources\">Resources</button><button data-tab=\"sources\">Sources</button><button data-tab=\"storage\">Storage</button></nav>\n<div class=\"si-body\"><div class=\"si-view\" id=\"si-elements\"><div id=\"si-tree\" class=\"si-tree\">Waiting for page…</div><aside class=\"si-details\"><b>Node details</b><div id=\"si-detail-content\" class=\"si-empty\">Select an element to inspect it.</div></aside></div>\n<div class=\"si-view si-list\" id=\"si-console\"><div class=\"si-toolbar\"><button id=\"si-picker\">Select element on page</button><span>Runtime messages and JavaScript errors</span></div><div id=\"si-console-list\"></div></div>\n<div class=\"si-view si-list\" id=\"si-network\"><div class=\"si-toolbar\"><button id=\"si-net-clear\">Clear</button><span>Wisp fetch requests</span></div><div class=\"si-row si-headrow\"><span>Method</span><span>URL</span><span>Status</span></div><div id=\"si-network-list\"></div></div>\n<div class=\"si-view si-list\" id=\"si-resources\"><div class=\"si-toolbar\">Page Performance API resources</div><div id=\"si-resource-list\"></div></div><div class=\"si-view si-list\" id=\"si-sources\"><div class=\"si-toolbar\">Scripts and stylesheets declared by the page</div><div id=\"si-source-list\"></div></div><div class=\"si-view si-list\" id=\"si-storage\"><div class=\"si-toolbar\">Storage available inside the sandboxed page</div><div id=\"si-storage-list\"></div></div></div>\n<footer class=\"si-foot\"><span id=\"si-status\">Inspector ready</span><span>Page sandbox and cross-origin limits still apply</span></footer>`;\ndocument.body.appendChild(panel);\nfunction frame(){return Array.from(document.querySelectorAll(\"iframe.web-frame\")).find(f=>f.style.display===\"block\")||document.querySelector(\"iframe.web-frame\");}\nfunction cmd(action,data){const f=frame();if(f&&f.contentWindow)f.contentWindow.postMessage({type:\"inspector:command\",data:Object.assign({action},data||{})},\"*\");}\nfunction open(){S.open=true;panel.classList.add(\"visible\");cmd(\"snapshot\");}\nfunction close(){S.open=false;panel.classList.remove(\"visible\");if(S.inspect){S.inspect=false;cmd(\"inspect-mode\",{enabled:false});}}\nfunction esc(v){return String(v==null?\"\":v).replace(/[&<>\"]/g,c=>({\"&\":\"&amp;\",\"<\":\"&lt;\",\">\":\"&gt;\",'\"':\"&quot;\"}[c]));}\nfunction walk(n,d){if(!n)return\"\";let a=Object.entries(n.attrs||{}).slice(0,3).map(([k,v])=>\" \"+k+'=\"'+esc(v).slice(0,50)+'\"').join(\"\");return \"<div class='si-node' style='--d:\"+d+\"'><button data-id='\"+n.id+\"'><i>&lt;\"+esc(n.tag)+\"</i>\"+esc(a)+\"&gt;</button>\"+(n.text?\"<em>\"+esc(n.text)+\"</em>\":\"\")+(n.children||[]).map(x=>walk(x,d+1)).join(\"\")+\"</div>\";}\nfunction details(d){S.selected=d;$(\"#si-detail-content\").innerHTML=\"<h3>&lt;\"+esc(d.tag)+\"&gt;</h3><h4>Attributes</h4>\"+Object.entries(d.attrs||{}).map(([k,v])=>\"<label>\"+esc(k)+\"<input data-attr='\"+esc(k)+\"' value='\"+esc(v)+\"'></label>\").join(\"\")+\"<h4>Computed style · editable inline</h4>\"+Object.entries(d.styles||{}).map(([k,v])=>\"<label>\"+esc(k)+\"<input data-style='\"+esc(k)+\"' value='\"+esc(v)+\"'></label>\").join(\"\")+\"<h4>HTML</h4><pre>\"+esc(d.html)+\"</pre><button id='si-remove'>Remove element</button>\";\n$(\"#si-detail-content\").querySelectorAll(\"[data-style]\").forEach(i=>i.onchange=()=>cmd(\"set-style\",{path:d.path,name:i.dataset.style,value:i.value}));\n$(\"#si-detail-content\").querySelectorAll(\"[data-attr]\").forEach(i=>i.onchange=()=>cmd(\"set-attr\",{path:d.path,name:i.dataset.attr,value:i.value}));\n$(\"#si-remove\").onclick=()=>{if(confirm(\"Remove this element?\"))cmd(\"remove\",{path:d.path});};}\nfunction tab(name){S.tab=name;panel.querySelectorAll(\".si-tabs button\").forEach(b=>b.classList.toggle(\"active\",b.dataset.tab===name));panel.querySelectorAll(\".si-view\").forEach(v=>v.style.display=v.id===\"si-\"+name?\"flex\":\"none\");}\npanel.addEventListener(\"click\",e=>{const b=e.target.closest(\".si-tabs button\");if(b)tab(b.dataset.tab);const n=e.target.closest(\".si-node button\");if(n){const find=x=>{if(!x)return null;if(x.id===+n.dataset.id)return x;for(const c of x.children||[]){const r=find(c);if(r)return r;}return null;};const x=find(S.tree);if(x){cmd(\"highlight\",{path:x.path});cmd(\"select-by-id\",{id:x.id});}}});\nfunction consoleRender(){$(\"#si-console-list\").innerHTML=S.console.map(x=>\"<div class='si-log \"+esc(x.level)+\"'><time>\"+new Date(x.time||Date.now()).toLocaleTimeString()+\"</time>\"+esc(x.args)+\"</div>\").join(\"\");}\nfunction networkRender(){$(\"#si-network-list\").innerHTML=S.network.slice().reverse().map(x=>\"<div class='si-row'><span>\"+esc(x.method)+\"</span><span title='\"+esc(x.url)+\"'>\"+esc(x.url)+\"</span><span>\"+esc(x.status)+\"</span></div>\").join(\"\");}\nfunction resourcesRender(){$(\"#si-resource-list\").innerHTML=S.resources.slice().reverse().map(x=>\"<div class='si-row'><span>\"+esc(x.type)+\"</span><span title='\"+esc(x.name)+\"'>\"+esc(x.name)+\"</span><span>\"+esc(x.duration)+\" ms</span></div>\").join(\"\");}\nwindow.addEventListener(\"message\",e=>{const f=Array.from(document.querySelectorAll(\"iframe.web-frame\")).find(x=>x.contentWindow===e.source);if(!f||!e.data)return;const d=e.data.data||{};\nif(e.data.type===\"inspector:ready\"){$(\"#si-status\").textContent=\"Connected · \"+(d.url||\"page\");if(S.open)cmd(\"snapshot\");}\nif(e.data.type===\"inspector:dom\"){S.tree=d.tree;$(\"#si-tree\").innerHTML=walk(d.tree,0);$(\"#si-status\").textContent=(d.url||\"Page\")+\" · DOM live\";}\nif(e.data.type===\"inspector:selected\"){details(d);tab(\"elements\");}\nif(e.data.type===\"inspector:console\"){S.console.push(d);if(S.console.length>400)S.console.shift();consoleRender();}\nif(e.data.type===\"inspector:error\"){S.console.push({level:\"error\",args:d.message,time:Date.now()});consoleRender();}\nif(e.data.type===\"inspector:resource\"){S.resources.push(d);if(S.resources.length>800)S.resources.shift();resourcesRender();}\nif(e.data.type===\"inspector:sources\"){$(\"#si-source-list\").innerHTML=(d.items||[]).map(x=>\"<div class=si-source><b>\"+esc(x.kind)+\"</b> \"+esc(x.url||x.name)+\"<pre>\"+esc(x.preview||\"\")+\"</pre></div>\").join(\"\")||\"No script or stylesheet elements found.\"}\nif(e.data.type===\"inspector:storage\"){$(\"#si-storage-list\").innerHTML=\"<pre class=si-storage>\"+esc(JSON.stringify(d,null,2))+\"</pre>\";}\nif(e.data.type===\"wisp:fetch\"){S.network.push({method:(e.data.options||{}).method||\"GET\",url:e.data.url,status:\"sent\"});if(S.network.length>400)S.network.shift();networkRender();}\nif(e.data.type===\"wisp:fetch:response\"){const p=S.network.find(x=>x.status===\"sent\");if(p)p.status=e.data.status||\"failed\";networkRender();}\n});\nwindow.addEventListener(\"safari:wisp-response\",e=>{const d=e.detail||{};const p=S.network.find(x=>x.status===\"sent\"&&(!d.url||x.url===d.url));if(p)p.status=d.status;networkRender();});\n$(\"#si-close\").onclick=close;$(\"#si-clear\").onclick=()=>{S.console=[];consoleRender();};$(\"#si-net-clear\").onclick=()=>{S.network=[];networkRender();};\n$(\"#si-picker\").onclick=()=>{S.inspect=!S.inspect;cmd(\"inspect-mode\",{enabled:S.inspect});$(\"#si-picker\").classList.toggle(\"active\",S.inspect);$(\"#si-status\").textContent=S.inspect?\"Click an element in the page\":\"Element picker off\";};\n$(\"#menu-inspect\").onclick=()=>{$(\"#menu-popup\").classList.remove(\"show\");open();};\ndocument.addEventListener(\"keydown\",e=>{if(((e.altKey&&e.metaKey)||(e.ctrlKey&&e.shiftKey))&&e.key.toLowerCase()===\"i\"){e.preventDefault();S.open?close():open();}});\nwindow.SafariWebInspector={open,close,refresh:()=>cmd(\"snapshot\")};\n})();" }
+  };
+  function b64ToU8(b64){
+    var bin = atob(b64), len = bin.length, u8 = new Uint8Array(len);
+    for (var i=0;i<len;i++) u8[i]=bin.charCodeAt(i);
+    return u8;
+  }
+  function getBlob(path){
+    path = path.replace(/^\.\//,"").replace(/^\//,"");
+    var e = VFS[path];
+    if(!e){
+      // try basename
+      var base = path.split("/").pop();
+      for (var k in VFS){ if(k.split("/").pop()===base){ e=VFS[k]; break; } }
+    }
+    if(!e) return null;
+    if(e.text != null) return new Blob([e.text], {type:e.mime||"text/plain"});
+    return new Blob([b64ToU8(e.b64)], {type:e.mime||"application/octet-stream"});
+  }
+  function getURL(path){
+    var b = getBlob(path);
+    return b ? URL.createObjectURL(b) : null;
+  }
+  window.__XK_VFS = { getBlob:getBlob, getURL:getURL, paths:Object.keys(VFS) };
+
+  // Patch fetch
+  var _fetch = window.fetch;
+  window.fetch = function(input, init){
+    var url = (typeof input === "string") ? input : (input && input.url) || "";
+    var clean = url.replace(/^\.\//,"").split("?")[0].split("#")[0];
+    var blob = getBlob(clean) || getBlob(clean.replace(/^\//,""));
+    if(blob) return Promise.resolve(new Response(blob, {status:200, statusText:"OK"}));
+    return _fetch.apply(this, arguments);
+  };
+
+  // Patch XHR
+  var _open = XMLHttpRequest.prototype.open;
+  var _send = XMLHttpRequest.prototype.send;
+  XMLHttpRequest.prototype.open = function(method, url){
+    this.__xk_url = url;
+    return _open.apply(this, arguments);
+  };
+  XMLHttpRequest.prototype.send = function(body){
+    var url = this.__xk_url || "";
+    var clean = String(url).replace(/^\.\//,"").split("?")[0].split("#")[0];
+    var blob = getBlob(clean) || getBlob(clean.replace(/^\//,""));
+    if(blob){
+      var self = this;
+      var fr = new FileReader();
+      fr.onload = function(){
+        Object.defineProperty(self, "response", {get:function(){return fr.result;}});
+        Object.defineProperty(self, "responseText", {get:function(){return typeof fr.result==="string"?fr.result:"";}});
+        Object.defineProperty(self, "status", {get:function(){return 200;}});
+        Object.defineProperty(self, "readyState", {get:function(){return 4;}});
+        if(self.onreadystatechange) self.onreadystatechange();
+        if(self.onload) self.onload();
+      };
+      if(this.responseType === "arraybuffer" || this.responseType === "blob"){
+        fr.readAsArrayBuffer(blob);
+      } else {
+        fr.readAsText(blob);
+      }
+      return;
+    }
+    return _send.apply(this, arguments);
+  };
+})();
+</script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no" />
+  <title>Safari (Final - Fixed Backgrounds)</title>
+  <style data-xk="inlined-css">/* style.css */
+:root {
+  
+  --wallpaper-dark: url('https://images.unsplash.com/photo-1550684848-fac1c5b4e853?q=80&w=2070&auto=format&fit=crop');
+  --wallpaper-light: url('https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=2564&auto=format&fit=crop');
+
+  
+  --bg: #1e1e1e;
+  --window-bg: rgba(45, 45, 45, 0.75); 
+  --tab-bar-bg: rgba(35, 35, 35, 0.7);
+  --tab-active: rgba(80, 80, 80, 0.6);
+  --tab-inactive: transparent;
+  --tab-text: #FFFFFF;
+  --tab-text-inactive: #A0A0A0;
+  --urlbar-bg: rgba(80, 80, 80, 0.5);
+  --urlbar-text: #FFFFFF;
+  --urlbar-icon: #D0D0D0;
+  --icon-color: #E0E0E0;
+  --border: rgba(255, 255, 255, 0.12);
+  --menu-bg: rgba(40, 40, 40, 0.9);
+  --menu-hover: #007AFF;
+  --accent: #007AFF;
+  --ntp-text: #fff;
+  --glass-card: rgba(60, 60, 60, 0.4);
+  --shadow: 0 10px 30px rgba(0,0,0,0.5);
+   
+  
+  --current-wallpaper: var(--wallpaper-dark);
+}
+
+body.light-mode {
+  
+  --bg: #E5E5E5;
+  --window-bg: rgba(245, 245, 245, 0.65);
+  --tab-bar-bg: rgba(230, 230, 230, 0.6);
+  --tab-active: rgba(255, 255, 255, 0.8);
+  --tab-inactive: transparent;
+  --tab-text: #000000;
+  --tab-text-inactive: #606060;
+  --urlbar-bg: rgba(255, 255, 255, 0.5);
+  --urlbar-text: #000000;
+  --urlbar-icon: #5C5C5C;
+  --icon-color: #333333;
+  --border: rgba(0, 0, 0, 0.1);
+  --menu-bg: rgba(255, 255, 255, 0.85);
+  --menu-hover: #007AFF;
+  --accent: #007AFF;
+  --ntp-text: #fff; 
+  --glass-card: rgba(255, 255, 255, 0.4);
+  --shadow: 0 10px 30px rgba(0,0,0,0.15);
+   
+  
+  --current-wallpaper: var(--wallpaper-light);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; user-select: none; }
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, sans-serif;
+   
+  
+  background-image: var(--current-wallpaper);
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+   
+  background-color: var(--bg);
+  color: var(--tab-text);
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  transition: background-image 0.4s ease-in-out;
+}
+
+
+#browser-ui {
+  display: flex;
+  flex-direction: column;
+  background: transparent;
+  flex-shrink: 0;
+  position: relative;
+  z-index: 100;
+}
+
+
+#nav-toolbar {
+  display: flex; align-items: center; padding: 8px 16px; gap: 10px;
+  background: var(--window-bg); height: 52px;
+  backdrop-filter: blur(25px) saturate(180%);
+  -webkit-backdrop-filter: blur(25px) saturate(180%);
+  border-bottom: 1px solid var(--border);
+  transition: background 0.3s;
+}
+
+.nav-btn {
+  width: 32px; height: 32px;
+  border-radius: 6px;
+  border: none;
+  background: transparent;
+  color: var(--icon-color);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+  transition: background 0.1s;
+}
+.nav-btn:hover:not(:disabled) { background: rgba(128,128,128,0.2); }
+.nav-btn:disabled { opacity: 0.3; cursor: default; }
+.nav-btn svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+
+#urlbar-container { flex: 1; position: relative; display: flex; justify-content: center; margin: 0 10px; }
+
+#urlbar-wrapper {
+  width: 100%; max-width: 700px;
+  display: flex; align-items: center;
+  background: var(--urlbar-bg);
+  border-radius: 8px;
+  height: 34px; padding: 0 8px;
+  transition: background 0.1s, box-shadow 0.1s;
+  border: 1px solid rgba(0,0,0,0.05);
+}
+#urlbar-wrapper:focus-within {
+  background: var(--tab-text); 
+  color: var(--bg);
+  box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.4);
+}
+body:not(.light-mode) #urlbar-wrapper:focus-within #urlbar-input { color: #000; }
+body.light-mode #urlbar-wrapper:focus-within { background: #fff; }
+
+#urlbar-input {
+  flex: 1; background: transparent; border: none;
+  color: var(--urlbar-text); font-size: 13px; outline: none;
+  font-family: inherit; text-align: center;
+}
+#urlbar-wrapper:focus-within #urlbar-input { text-align: left; }
+
+.urlbar-icon {
+  color: var(--urlbar-icon); opacity: 0.8; padding: 4px;
+  border-radius: 4px; cursor: pointer; display: flex; align-items: center; border:none; background:transparent;
+}
+.urlbar-icon:hover { background: rgba(128,128,128,0.1); color: var(--accent); }
+.urlbar-icon svg { width: 14px; height: 14px; stroke: currentColor; stroke-width: 2; fill: none; }
+
+#url-spinner {
+  width: 14px; height: 14px; margin-right: 8px;
+  border: 2px solid rgba(128,128,128,0.3); border-top-color: var(--accent);
+  border-radius: 50%; animation: spin 0.8s linear infinite; display: none;
+}
+.loading #url-spinner { display: block; }
+.loading #url-lock { display: none; }
+
+
+#tabs-strip {
+  display: flex; align-items: flex-end; 
+  padding: 0 8px; height: 34px; gap: 2px;
+  background: var(--tab-bar-bg);
+  backdrop-filter: blur(25px) saturate(180%);
+  -webkit-backdrop-filter: blur(25px) saturate(180%);
+  border-bottom: 1px solid var(--border);
+  transition: height 0.2s, opacity 0.2s;
+}
+#tabs-strip.hidden {
+  height: 0; opacity: 0; overflow: hidden; padding: 0; border: none;
+}
+
+#tabs-container {
+  display: flex; flex: 1; overflow-x: auto; gap: 4px; scrollbar-width: none; align-items: stretch; height: 100%;
+}
+#tabs-container::-webkit-scrollbar { display: none; }
+
+.tab {
+  display: flex; align-items: center; justify-content: center;
+  padding: 0 10px;
+  color: var(--tab-text-inactive);
+  background: var(--tab-inactive);
+  border-radius: 4px 4px 0 0;
+  min-width: 120px; max-width: 240px;
+  flex: 1; font-size: 12px; cursor: default;
+  position: relative; transition: 0.1s; border: none;
+}
+.tab:hover:not(.active) { background: rgba(128,128,128,0.2); }
+
+.tab.active {
+  background: var(--tab-active);
+  color: var(--tab-text);
+  box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+}
+
+.tab-icon-area { width: 14px; height: 14px; margin-right: 6px; flex-shrink: 0; display:flex; align-items:center; }
+.tab-favicon { width: 14px; height: 14px; }
+.tab-title { flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-align: center; }
+.tab-close {
+  width: 16px; height: 16px; border-radius: 4px; border: none;
+  background: transparent; color: inherit; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  opacity: 0; font-size: 14px; margin-left: 6px;
+}
+.tab:hover .tab-close { opacity: 0.6; }
+.tab-close:hover { background: rgba(128,128,128,0.3); opacity: 1; }
+
+#tab-strip-plus {
+  width: 28px; height: 28px;
+  display: flex; align-items: center; justify-content: center;
+  background: transparent; border: none;
+  color: var(--icon-color) !important;
+  border-radius: 6px; cursor: pointer; flex-shrink: 0; margin-left: 6px; margin-bottom: 3px;
+}
+#tab-strip-plus:hover { background: rgba(128,128,128,0.25); }
+#tab-strip-plus svg { width: 16px; height: 16px; stroke: currentColor; stroke-width: 2; fill: none; }
+
+#bookmarks-bar { display: none; }
+
+
+.popup-menu {
+  position: absolute; top: 52px; width: 260px;
+  background: var(--menu-bg); border: 1px solid var(--border);
+  border-radius: 10px; box-shadow: 0 15px 40px rgba(0,0,0,0.4);
+  display: none; flex-direction: column; padding: 6px; z-index: 999;
+  backdrop-filter: blur(30px) saturate(180%); -webkit-backdrop-filter: blur(30px) saturate(180%);
+}
+#menu-popup { right: 10px; }
+#bookmarks-popup { right: 50px; }
+
+.popup-menu.show { display: flex; animation: fadein 0.15s ease; }
+
+.menu-item {
+  padding: 6px 10px; display: flex; align-items: center; gap: 10px;
+  color: var(--tab-text); cursor: pointer; font-size: 13px; border-radius: 5px;
+}
+.menu-item:hover { background: var(--menu-hover); color: white; }
+.menu-sep { height: 1px; background: var(--border); margin: 4px 0; opacity: 0.5; }
+.menu-item img { width: 16px; height: 16px; border-radius: 3px; }
+
+#web-content { flex: 1; position: relative; background: #fff; }
+
+
+iframe.web-frame { 
+    width: 100%; height: 100%; border: none; display: none; 
+    background: transparent; 
+}
+iframe.web-frame.active { display: block; }
+
+#status-bar {
+  background: var(--window-bg); color: var(--icon-color); opacity: 0.9; font-size: 11px;
+  padding: 2px 10px; border-top: 1px solid var(--border); text-align: center;
+  backdrop-filter: blur(25px) saturate(180%); -webkit-backdrop-filter: blur(25px) saturate(180%);
+}
+
+
+.internal-page {
+  
+  background-image: var(--current-wallpaper);
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  color: var(--ntp-text); height: 100%; width: 100%;
+  font-family: -apple-system, system-ui, sans-serif;
+  display: flex; flex-direction: column; align-items: center;
+  padding-top: 8vh; overflow-y: auto;
+  text-shadow: 0 2px 15px rgba(0,0,0,0.5);
+}
+
+.start-container { width: 100%; max-width: 900px; padding: 20px; }
+.section-title { font-size: 22px; font-weight: 700; margin-bottom: 20px; color: #fff; }
+
+.favorites-grid { display: flex; flex-wrap: wrap; gap: 32px; margin-bottom: 50px; }
+.fav-card {
+  display: flex; flex-direction: column; align-items: center; gap: 8px;
+  cursor: pointer; width: 80px; transition: transform 0.1s;
+}
+.fav-card:hover { transform: scale(1.05); }
+.fav-icon {
+  width: 68px; height: 68px; background: rgba(255,255,255,0.9); border-radius: 16px;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+}
+.fav-icon img { width: 40px; height: 40px; object-fit: contain; }
+.fav-label { 
+    font-size: 13px; font-weight: 500; text-align: center; color: #fff; 
+    text-shadow: 0 1px 3px rgba(0,0,0,0.8);
+}
+
+.privacy-card {
+  background: var(--glass-card);
+  backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+  border-radius: 12px; padding: 20px;
+  box-shadow: var(--shadow);
+  display: flex; align-items: center; gap: 20px;
+  max-width: 400px; cursor: default; border: 1px solid rgba(255,255,255,0.1);
+}
+.shield-big { width: 40px; height: 40px; stroke: #fff; fill: none; stroke-width: 2; }
+.privacy-text h3 { margin: 0 0 4px 0; font-size: 15px; color: #fff; }
+.privacy-text p { margin: 0; font-size: 12px; opacity: 0.9; color: #fff; }
+
+@keyframes spin { to { transform: rotate(360deg); } }
+@keyframes fadein { from { opacity:0; transform:translateY(5px); } to { opacity:1; transform:translateY(0); } }
+
+
+body.page-only #browser-ui,
+body.page-only #status-bar {
+  display: none !important;
+}
+body.page-only #web-content {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 1;
+}
+body.page-only #ntp-overlay {
+  position: fixed;
+  inset: 0;
+}
+</style>
+  <style data-xk="inlined-css">/* devtools.css */
+#safari-inspector{position:fixed;z-index:9999;left:0;right:0;bottom:23px;height:42vh;min-height:230px;max-height:75vh;background:#1d1d1f;color:#eee;border-top:1px solid #555;box-shadow:0 -8px 30px #0006;display:none;flex-direction:column;font:12px -apple-system,BlinkMacSystemFont,sans-serif;user-select:text}#safari-inspector.visible{display:flex}.si-head{height:38px;display:flex;align-items:center;justify-content:space-between;padding:0 12px;background:#29292c;border-bottom:1px solid #444}.si-head small{font-weight:400;color:#aaa;margin-left:8px}.si-head button,.si-toolbar button{background:#3a3a3d;color:#eee;border:1px solid #555;border-radius:5px;padding:4px 9px;cursor:pointer}.si-tabs{height:34px;display:flex;padding:0 9px;background:#242427;border-bottom:1px solid #444}.si-tabs button{background:none;color:#aaa;border:0;border-bottom:2px solid transparent;padding:0 14px;cursor:pointer}.si-tabs button.active{color:#fff;border-bottom-color:#0a84ff}.si-body{flex:1;min-height:0;overflow:hidden}.si-view{height:100%;display:flex;min-height:0}.si-view:not(#si-elements){display:none}.si-tree{width:54%;overflow:auto;padding:9px;border-right:1px solid #444;font:12px ui-monospace,monospace}.si-details{flex:1;overflow:auto;padding:12px}.si-node{padding-left:calc(var(--d)*12px);line-height:21px;white-space:nowrap}.si-node button{background:none;border:0;color:#d8d8dc;cursor:pointer;font:inherit}.si-node button:hover{background:#38383c}.si-node i{color:#91c8ff;font-style:normal}.si-node em{color:#aaa;font-style:normal}.si-empty{color:#999;padding:15px}.si-details h3{color:#91c8ff;font:14px ui-monospace}.si-details h4{border-top:1px solid #444;padding:8px 0 4px;margin:7px 0;color:#bbb}.si-details label{display:flex;gap:8px;align-items:center;margin:3px 0;color:#aaa}.si-details label input{flex:1;min-width:0;background:#29292d;border:1px solid #48484d;color:#eee;padding:4px;border-radius:3px}.si-details pre{white-space:pre-wrap;overflow-wrap:anywhere;max-height:90px;overflow:auto;color:#aaa;background:#252528;padding:6px}.si-details #si-remove{margin-top:10px;background:#542e30;color:#ffb8ba;border:1px solid #88474b;padding:6px;border-radius:4px}.si-list{flex-direction:column;overflow:hidden}.si-toolbar{height:34px;display:flex;align-items:center;gap:12px;padding:0 10px;color:#aaa;border-bottom:1px solid #444}.si-toolbar button.active{background:#075ba9}.si-row{display:grid;grid-template-columns:100px minmax(0,1fr) 100px;gap:10px;padding:6px 10px;border-bottom:1px solid #38383b;font:12px ui-monospace,monospace}.si-row span:nth-child(2){overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.si-headrow{color:#aaa;background:#252528}.si-log{display:flex;gap:12px;padding:5px 10px;border-bottom:1px solid #333;font:12px ui-monospace,monospace}.si-log time{color:#888;min-width:78px}.si-log.error{color:#ff8c8c}.si-log.warn{color:#f4ce7a}.si-log.info{color:#91c8ff}#si-console-list,#si-network-list,#si-resource-list{overflow:auto;flex:1}.si-foot{height:23px;display:flex;justify-content:space-between;padding:4px 10px;background:#252528;border-top:1px solid #444;color:#999;font-size:10px}@media(max-width:650px){#safari-inspector{height:55vh}.si-tree{width:45%}.si-row{grid-template-columns:65px minmax(0,1fr) 70px}}</style>
+</head>
+<body class="">
+
+  <div id="browser-ui">
+    <div id="nav-toolbar">
+      <button class="nav-btn" title="Toggle Sidebar">
+        <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="9" y1="3" x2="9" y2="21"/></svg>
+      </button>
+      
+      <button id="back-btn" class="nav-btn" disabled>
+        <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+      </button>
+      <button id="forward-btn" class="nav-btn" disabled>
+        <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+      </button>
+
+      <button id="home-btn" class="nav-btn" title="Home">
+         <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+      </button>
+
+      <div id="urlbar-container">
+        <div id="urlbar-wrapper">
+          <button class="urlbar-icon" style="margin-right:4px">
+             <svg viewBox="0 0 24 24"><path d="M5.5 2C3.5 2 2 3.5 2 5.5v13C2 20.5 3.5 22 5.5 22H19v-2H5.5c-1 0-1.5-.5-1.5-1.5S4.5 17 5.5 17H19V2H5.5z"/><path d="M16 5h-3v10h3V5z"/></svg>
+          </button>
+          
+          <div id="url-spinner"></div>
+          <svg id="url-lock" class="urlbar-icon" style="cursor:default; width:14px;" viewBox="0 0 24 24"><path d="M12 2a5 5 0 0 0-5 5v3H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8a2 2 0 0 0-2-2h-1V7a5 5 0 0 0-5-5zm-3 5a3 3 0 0 1 6 0v3H9V7z"/></svg>
+          
+          <input id="urlbar-input" type="text" placeholder="Search or enter website name" autocomplete="off" />
+          
+          <button class="urlbar-icon" id="reload-btn">
+             <svg viewBox="0 0 24 24"><path d="M23 4v6h-6"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <button class="nav-btn" id="toolbar-plus-btn" title="New Tab">
+         <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      </button>
+
+      <button class="nav-btn" title="Share">
+        <svg viewBox="0 0 24 24"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>
+      </button>
+      
+      <button class="nav-btn" id="bookmarks-btn" title="Show Bookmarks">
+         <svg viewBox="0 0 24 24"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path></svg>
+      </button>
+
+      <button id="menu-btn" class="nav-btn">
+        <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><path d="M14 14h7v7h-7z"/><path d="M3 14h7v7H3z"/></svg>
+      </button>
+    </div>
+
+    <div id="tabs-strip">
+      <div id="tabs-container"></div>
+      <button id="tab-strip-plus" title="New Tab">
+        <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      </button>
+    </div>
+
+    <div id="bookmarks-bar"></div>
+
+    <div id="bookmarks-popup" class="popup-menu">
+      <div style="padding:4px 12px;font-size:11px;opacity:0.5;font-weight:600;color:var(--tab-text)">FAVORITES</div>
+      <div id="bookmarks-list"></div>
+    </div>
+
+    <div id="menu-popup" class="popup-menu">
+      <div class="menu-item" id="menu-new-tab">New Tab <span style="margin-left:auto;opacity:0.5">⌘T</span></div>
+      <div class="menu-item" style="opacity:0.5">New Window <span style="margin-left:auto;opacity:0.5">⌘N</span></div>
+      <div class="menu-sep"></div>
+      <div class="menu-item" id="menu-inspect">Show Web Inspector <span style="margin-left:auto;opacity:.5">⌥⌘I</span></div>
+      <div class="menu-item" id="menu-wisp-settings">Wisp Relay Settings</div>
+      <div class="menu-sep"></div>
+      <div class="menu-item" id="menu-theme-toggle">Switch to Light Mode</div>
+      <div class="menu-sep"></div>
+      <div class="menu-item">Show History <span style="margin-left:auto;opacity:0.5">⌘Y</span></div>
+    </div>
+  </div>
+
+  <div id="web-content"></div>
+  <div id="status-bar">Ready</div>
+
+  <script src="https://cdn.jsdelivr.net/npm/libcurl.js@0.7.4/libcurl_full.js"></script>
+    <script data-xk="inlined-js"   >
+/* libcurl-bridge.js */
+
+(function () {
+  "use strict";
+  if (typeof libcurl === "undefined") {
+    throw new Error("libcurl.js loaded without exposing its libcurl binding");
+  }
+  if (window.GXLibcurl && window.GXLibcurl !== libcurl) {
+    throw new Error("A different libcurl runtime is already registered");
+  }
+  window.GXLibcurl = libcurl;
+})();
+
+</script>
+    <script data-xk="inlined-js"   >
+/* wisp-manager.js */
+
+(() => {
+  "use strict";
+  const DEFAULTS = [
+  "wss://wisp.terbiumon.top/wisp/",
+  "wss://wisp.rhw.one/wisp/",
+  "wss://definitelyscience.com/wisp/",
+  "wss://mages.io/wisp/",
+  "wss://lichology.com/wisp/",
+  "wss://motor-cycle-part.org/wisp/",
+  "wss://area.forwardersoft.com/wisp/",
+  "wss://truf.the-nest.at/wisp/",
+  "wss://thoughts.forwardersoft.com/wisp/",
+  "wss://anura.pro/",
+  "wss://wisp.mercurywork.shop/",
+  "wss://nebulaproxy.io/wisp/",
+  "wss://invisiproxy.com/wisp/",
+  "wss://english.algebra.teacher.vocabulary.homework.forwardersoft.com/wisp/"
+];
+  const STORE = {
+    preferred: "gx:wisp:v1",
+    fastest: "gx:wisp:fastest:v1",
+    health: "gx:wisp:health:v1",
+    custom: "gx:fallback:wisp"
+  };
+  const COOLDOWN_MS = 5 * 60 * 1000;
+  const TIMEOUT_MS = 9000;
+  const RUNTIME_STATE_KEY = "__GX_LIBCURL_RUNTIME_V1__";
+  let activeRelay = "";
+  let requestQueue = Promise.resolve();
+  const sessions = new Map();
+
+  const storage = {
+    get(key) { try { return localStorage.getItem(key); } catch (_) { return null; } },
+    set(key, value) { try { localStorage.setItem(key, value); } catch (_) {} }
+  };
+  function readHealth() {
+    try { return JSON.parse(storage.get(STORE.health) || "{}"); } catch (_) { return {}; }
+  }
+  function writeHealth(value) { storage.set(STORE.health, JSON.stringify(value)); }
+  function hostOf(url) { try { return new URL(url).hostname; } catch (_) { return "unknown"; } }
+  function getWispPool() {
+    return [...new Set([
+      ...DEFAULTS,
+      storage.get(STORE.preferred),
+      storage.get(STORE.fastest),
+      storage.get(STORE.custom)
+    ].filter(Boolean))];
+  }
+  function rankPoolCandidates(host) {
+    const health = readHealth();
+    const now = Date.now();
+    const preferred = storage.get(STORE.preferred) || DEFAULTS[0];
+    const fastest = storage.get(STORE.fastest);
+    return getWispPool().map((url, index) => {
+      const item = health[url] && health[url][host] || {};
+      return { url, index, latency: Number(item.latency) || 0,
+        failedUntil: Number(item.failedUntil) || 0,
+        preferred: url === preferred, fastest: url === fastest };
+    }).filter(x => x.failedUntil <= now)
+      .sort((a, b) => Number(b.preferred) - Number(a.preferred)
+        || Number(b.fastest) - Number(a.fastest)
+        || (a.latency && b.latency ? a.latency - b.latency : a.latency ? -1 : b.latency ? 1 : a.index - b.index));
+  }
+  function rememberResult(url, host, ok, latency) {
+    const health = readHealth();
+    health[url] = health[url] || {};
+    health[url][host] = ok
+      ? { latency: Math.round(latency), failedUntil: 0, lastOk: Date.now() }
+      : { ...(health[url][host] || {}), failedUntil: Date.now() + COOLDOWN_MS, lastFail: Date.now() };
+    writeHealth(health);
+    if (ok) storage.set(STORE.fastest, url);
+  }
+  async function ensureRuntime() {
+    
+    
+    const runtime = window.GXLibcurl;
+    if (!runtime) throw new Error("GX libcurl runtime was not loaded; check libcurl_full.js and libcurl-bridge.js");
+    if (!runtime.ready) await runtime.load_wasm();
+    if (!runtime.ready) throw new Error("GX libcurl WASM initialization did not complete");
+    return runtime;
+  }
+  function getSession(libcurl, relay) {
+    let session = sessions.get(relay);
+    if (!session) {
+      session = new libcurl.HTTPSession({ enable_cookies: true });
+      session.set_connections(24, 18, 8);
+      sessions.set(relay, session);
+    }
+    return session;
+  }
+  async function fetchOnce(libcurl, relay, url, options) {
+    libcurl.set_websocket(relay);
+    const session = getSession(libcurl, relay);
+    const controller = new AbortController();
+    const externalSignal = options && options.signal;
+    const onAbort = () => controller.abort();
+    if (externalSignal) {
+      if (externalSignal.aborted) controller.abort();
+      else externalSignal.addEventListener("abort", onAbort, { once: true });
+    }
+    const timeout = setTimeout(() => controller.abort(), TIMEOUT_MS);
+    const started = performance.now();
+    try {
+      const fetchOptions = { ...(options || {}), signal: controller.signal };
+      const response = await session.fetch(url, fetchOptions);
+      const bytes = await response.arrayBuffer();
+      const latency = performance.now() - started;
+      rememberResult(relay, hostOf(url), true, latency);
+      activeRelay = relay;
+      return new Response(bytes, { status: response.status, statusText: response.statusText, headers: response.headers });
+    } catch (error) {
+      rememberResult(relay, hostOf(url), false, 0);
+      try { session.close(); } catch (_) {}
+      sessions.delete(relay);
+      throw error;
+    } finally {
+      clearTimeout(timeout);
+      if (externalSignal) externalSignal.removeEventListener("abort", onAbort);
+    }
+  }
+  async function fetchInternal(url, options = {}) {
+    const libcurl = await ensureRuntime();
+    const host = hostOf(url);
+    const candidates = rankPoolCandidates(host);
+    if (activeRelay) candidates.sort((a, b) => Number(b.url === activeRelay) - Number(a.url === activeRelay));
+    if (!candidates.length) throw new Error("No Wisp relays are currently eligible; wait for cooldown or reset the relay pool.");
+    const errors = [];
+    for (const candidate of candidates) {
+      try {
+        return await fetchOnce(libcurl, candidate.url, url, options);
+      } catch (error) {
+        errors.push(candidate.url + ": " + (error && error.message || error));
+      }
+    }
+    throw new Error("Every GX Wisp relay failed. " + errors.join(" | "));
+  }
+  function fetch(url, options = {}) {
+    const run = requestQueue.then(() => fetchInternal(url, options));
+    requestQueue = run.catch(() => {});
+    return run;
+  }
+  function setPreferred(url) {
+    const value = String(url || "").trim();
+    if (!value) { storage.set(STORE.preferred, ""); return; }
+    if (!/^wss:\/\
+    storage.set(STORE.preferred, value.replace(/\s+/g, ""));
+    activeRelay = "";
+  }
+  function openSettings() {
+    const current = storage.get(STORE.preferred) || activeRelay || DEFAULTS[0];
+    const answer = window.prompt(
+      "Preferred Wisp relay (wss://...). Leave blank to use the GX relay pool.\n\nGX defaults: " + DEFAULTS.length,
+      current
+    );
+    if (answer === null) return;
+    if (!answer.trim()) {
+      storage.set(STORE.preferred, "");
+      storage.set(STORE.fastest, "");
+      alert("GX Wisp default pool restored.");
+      return;
+    }
+    try {
+      setPreferred(answer);
+      alert("Preferred Wisp relay saved. It will be tested on the next navigation.");
+    } catch (error) { alert(error.message); }
+  }
+  window.GXWisp = {
+    defaults: DEFAULTS.slice(),
+    fetch,
+    ensureRuntime,
+    getWispPool,
+    get activeRelay() { return activeRelay; },
+    openSettings,
+    reset() {
+      storage.set(STORE.preferred, "");
+      storage.set(STORE.fastest, "");
+      storage.set(STORE.health, "{}");
+      activeRelay = "";
+      for (const session of sessions.values()) { try { session.close(); } catch (_) {} }
+      sessions.clear();
+    }
+  };
+})();
+</script>
+  <script data-xk="inlined-js"   >
+/* script.js */
+(() => {
+  "use strict";
+
+  
+  
+  const HOMEPAGE = "about:home";
+  const endpointParams = new URLSearchParams(window.location.search);
+  const endpointTarget = endpointParams.has("p") ? normalizeEndpointTarget(endpointParams.get("p")) : "";
+  const pageOnlyMode = endpointParams.get("f") === "1";
+
+  function normalizeEndpointTarget(value) {
+    const raw = String(value || "").trim();
+    if (!raw) return "";
+    return normalizeUrl(raw);
+  }
+  
+  const DEFAULTS = {
+    favorites: [
+      { url: "https://www.apple.com", title: "Apple", icon: "https://www.apple.com/favicon.ico" },
+      { url: "https://en.uncyclopedia.co/", title: "Uncyclopedia", icon: "https://upload.wikimedia.org/wikipedia/commons/8/80/Wikipedia-logo-v2.svg" },
+      { url: "https://www.bing.com/", title: "Bing", icon: "https://upload.wikimedia.org/wikipedia/commons/9/9c/Bing_Fluent_Logo.svg" },
+      { url: "https://www.amazon.com", title: "Amazon", icon: "https://upload.wikimedia.org/wikipedia/commons/4/4a/Amazon_icon.svg" },
+      { url: "https://kick.com/browse", title: "Kick", icon: "https://emoji.discadia.com/emojis/34d2e9b2-b9bd-4a49-95c0-0f22fb78fc36.PNG" },
+      { url: "https://discord.com", title: "Discord", icon: "https://freelogopng.com/images/all_img/1691730813discord-icon-png.png" },
+      { url: "https://www.reddit.com", title: "Reddit", icon: "https://www.redditstatic.com/desktop2x/img/favicon/favicon-96x96.png" },
+      { url: "https://store.steampowered.com", title: "Steam", icon: "https://upload.wikimedia.org/wikipedia/commons/8/83/Steam_icon_logo.svg" },
+      { url: "https://github.com", title: "GitHub", icon: "https://upload.wikimedia.org/wikipedia/commons/c/c2/GitHub_Invertocat_Logo.svg" }
+    ]
+  };
+
+  const $ = s => document.querySelector(s);
+  const escape = s => (s||"").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+  
+  function getFavicon(url) {
+    if (!url || url.startsWith("about:") || url.startsWith("data:")) return "";
+    const fav = favorites.find(f => f.url === url);
+    if (fav && fav.icon) return fav.icon;
+    try { return `https://www.google.com/s2/favicons?domain=${new URL(url).hostname}&sz=32`; } catch { return ""; }
+  }
+
+  function syncTopSite(tab) {
+    if (!tab || tab.id !== activeTabId) return;
+    const title = tab.title || (() => { try { return new URL(tab.url).hostname; } catch (_) { return "Safari"; } })();
+    if (document.title !== title) document.title = title;
+    let icon = document.querySelector('link#active-page-favicon');
+    if (!icon) {
+      icon = document.createElement("link");
+      icon.id = "active-page-favicon";
+      icon.rel = "icon";
+      document.head.appendChild(icon);
+    }
+    const favicon = tab.favicon || getFavicon(tab.url);
+    if (favicon) {
+      if (icon.href !== favicon) icon.href = favicon;
+    } else {
+      icon.removeAttribute("href");
+    }
+  }
+
+  function normalizeUrl(input) {
+    let s = String(input || "").trim();
+    if (!s) return "about:blank";
+    if (s === "about:home") return s;
+    if (s.startsWith("data:")) return s;
+    if (/^https?:\/\
+      try {
+        const parsed = new URL(s);
+        if (parsed.hostname === "duckduckgo.com" || parsed.hostname === "www.duckduckgo.com") {
+          if (!parsed.pathname) parsed.pathname = "/";
+          return parsed.href;
+        }
+      } catch (_) {}
+      return s;
+    }
+    if (s.includes(".") && !s.includes(" ")) return "https://" + s;
+    return `https://www.bing.com/search?q=${encodeURIComponent(s)}`;
+  }
+
+  let tabs = [];
+  let activeTabId = null;
+  let favorites = [...DEFAULTS.favorites];
+  let isLightMode = false;
+
+  
+  
+  
+  const webContent = $("#web-content");
+  const startPageOverlay = document.createElement("div");
+  startPageOverlay.id = "ntp-overlay";
+  startPageOverlay.style.display = "none";
+  startPageOverlay.style.width = "100%";
+  startPageOverlay.style.height = "100%";
+  startPageOverlay.style.position = "absolute";
+  startPageOverlay.style.top = "0";
+  startPageOverlay.style.zIndex = "50";
+  webContent.appendChild(startPageOverlay);
+
+  
+  function getThemeColors() {
+      const style = getComputedStyle(document.documentElement);
+      return {
+          bg: style.getPropertyValue('--menu-bg').trim(),
+          text: style.getPropertyValue('--tab-text').trim(),
+          shadow: style.getPropertyValue('--shadow').trim(),
+          accent: style.getPropertyValue('--accent').trim()
+      };
+  }
+
+  async function fetchWithTimeout(resource, options = {}) {
+    const { timeout = 8000 } = options;
+    const controller = new AbortController();
+    const id = setTimeout(() => controller.abort(), timeout);
+    const response = await fetch(resource, { ...options, signal: controller.signal });
+    clearTimeout(id);
+    return response;
+  }
+
+  function injectWispBridge(html) {
+    const bridge = '<script>(function(){try{' +
+      'var pending=new Map(),nextId=0,nativeFetch=window.fetch.bind(window);' +
+      'window.addEventListener("message",function(ev){var d=ev.data;if(!d||d.type!=="wisp:fetch:response")return;var p=pending.get(d.id);if(!p)return;pending.delete(d.id);if(d.error){p.reject(new TypeError(d.error));return;}try{var rb=(d.body&&d.body.byteLength)?new Uint8Array(d.body):null;if(d.status===204||d.status===205||d.status===304)rb=null;p.resolve(new Response(rb,{status:d.status,statusText:d.statusText,headers:d.headers||[]}));}catch(err){p.reject(err);}});' +
+      'window.fetch=async function(input,init){var req=input instanceof Request?input:null;var url=new URL(req?req.url:String(input),document.baseURI);if(url.protocol!=="http:"&&url.protocol!=="https:")return nativeFetch(input,init);var method=(init&&init.method)||(req&&req.method)||"GET";var headers=new Headers(req?req.headers:undefined);if(init&&init.headers)new Headers(init.headers).forEach(function(v,k){headers.set(k,v);});var body=init&&Object.prototype.hasOwnProperty.call(init,"body")?init.body:undefined;if(body===undefined&&req&&method!=="GET"&&method!=="HEAD")body=await req.clone().arrayBuffer();if(body instanceof URLSearchParams){if(!headers.has("content-type"))headers.set("content-type","application/x-www-form-urlencoded;charset=UTF-8");body=body.toString();}if(body instanceof Blob)body=await body.arrayBuffer();var id=++nextId;var opts={method:method,headers:Array.from(headers.entries()),credentials:(init&&init.credentials)||(req&&req.credentials)||"same-origin",redirect:(init&&init.redirect)||(req&&req.redirect)||"follow"};return new Promise(function(resolve,reject){pending.set(id,{resolve:resolve,reject:reject});var msg={type:"wisp:fetch",id:id,url:url.href,options:opts,body:body};try{window.parent.postMessage(msg,"*",body instanceof ArrayBuffer?[body]:[]);}catch(err){pending.delete(id);reject(err);}});};' +
+      'document.addEventListener("click",function(ev){var a=ev.target.closest&&ev.target.closest("a[href]");if(!a||a.hasAttribute("download"))return;var target=a.getAttribute("target");if(target&&target!=="_self")return;var u=new URL(a.href,document.baseURI);if(u.protocol!=="http:"&&u.protocol!=="https:")return;var b=new URL(document.baseURI);if(u.origin===b.origin&&u.pathname===b.pathname&&u.search===b.search)return;ev.preventDefault();window.parent.postMessage({type:"nav",url:u.href},"*");},true);' +
+      'document.addEventListener("submit",function(ev){var f=ev.target;if(!f||String(f.method||"get").toLowerCase()!=="get")return;var u=new URL(f.action||document.baseURI,document.baseURI);var q=new URLSearchParams(new FormData(f));u.search=q.toString();ev.preventDefault();window.parent.postMessage({type:"nav",url:u.href},"*");},true);' +
+      '}catch(e){console.warn("Wisp page bridge:",e);}})();</script>';
+    const inspector = `<script>
+(function(){
+ if(window.__safariInspectorInstalled)return;window.__safariInspectorInstalled=true;
+ var ids=new WeakMap(),byId={},next=0,inspectMode=false;
+ function idFor(n){if(!ids.has(n)){ids.set(n,++next);byId[next]=n;}return ids.get(n);}
+ function pathFor(el){var p=[],n=el;while(n&&n.nodeType===1&&n!==document.documentElement){var par=n.parentElement;if(!par)break;p.unshift(Array.prototype.indexOf.call(par.children,n));n=par;}return p;}
+ function send(type,data){try{parent.postMessage({type:type,data:data||{}},"*");}catch(e){}}
+ function describe(n,depth){if(!n||n.nodeType!==1)return null;var a={};Array.prototype.slice.call(n.attributes||[]).slice(0,40).forEach(function(x){a[x.name]=x.value;});var o={id:idFor(n),tag:n.tagName.toLowerCase(),attrs:a,text:n.children.length?"":(n.textContent||"").trim().slice(0,150),path:pathFor(n),children:[]};if(depth>0)Array.prototype.slice.call(n.children||[]).slice(0,70).forEach(function(c){var x=describe(c,depth-1);if(x)o.children.push(x);});return o;}
+ function snapshot(){try{var icon=document.querySelector('link[rel~="icon"],link[rel="shortcut icon"]');send("inspector:dom",{tree:describe(document.documentElement,8),url:location.href,title:document.title,favicon:icon?(icon.href||icon.getAttribute("href")||""):""});}catch(e){send("inspector:error",{message:String(e)});}}
+ var timer;function changed(){clearTimeout(timer);timer=setTimeout(snapshot,200);}
+ try{new MutationObserver(changed).observe(document.documentElement,{subtree:true,childList:true,attributes:true,characterData:true});}catch(e){}
+ function selected(el){var s=getComputedStyle(el),styles={};["display","position","width","height","margin","padding","color","backgroundColor","fontSize","fontFamily","border","opacity","zIndex","overflow"].forEach(function(k){styles[k]=s[k];});var attrs={};Array.prototype.slice.call(el.attributes||[]).forEach(function(a){attrs[a.name]=a.value;});send("inspector:selected",{id:idFor(el),tag:el.tagName.toLowerCase(),attrs:attrs,text:(el.textContent||"").trim().slice(0,300),path:pathFor(el),styles:styles,html:el.outerHTML.slice(0,3500)});}
+ document.addEventListener("click",function(e){if(!inspectMode)return;e.preventDefault();e.stopPropagation();selected(e.target);},true);
+ ["log","info","warn","error","debug"].forEach(function(k){var orig=console[k];console[k]=function(){try{send("inspector:console",{level:k,args:Array.prototype.slice.call(arguments).map(function(v){try{return typeof v==="string"?v:JSON.stringify(v);}catch(e){return String(v);}}).join(" "),time:Date.now()});}catch(e){}return orig.apply(console,arguments);};});
+ addEventListener("error",function(e){send("inspector:console",{level:"error",args:(e.message||"Script error")+" · "+(e.filename||"")+":"+(e.lineno||0),time:Date.now()});});
+ addEventListener("unhandledrejection",function(e){send("inspector:console",{level:"error",args:"Unhandled rejection: "+String(e.reason),time:Date.now()});});
+ try{new PerformanceObserver(function(list){list.getEntries().forEach(function(e){send("inspector:resource",{name:e.name,type:e.initiatorType||"resource",duration:Math.round(e.duration),size:e.transferSize||0});});}).observe({type:"resource",buffered:true});}catch(e){}
+ addEventListener("message",function(e){var d=e.data;if(!d||d.type!=="inspector:command")return;var a=d.data||{},el;try{if(a.action==="snapshot")snapshot();else if(a.action==="inspect-mode"){inspectMode=!!a.enabled;document.documentElement.style.cursor=inspectMode?"crosshair":"";}else if(a.action==="highlight"){el=(function(p){var n=document.documentElement;(p||[]).forEach(function(i){n=n&&n.children[i];});return n;})(a.path);if(el){el.scrollIntoView({block:"center"});el.style.outline="2px solid #0a84ff";setTimeout(function(){el.style.outline="";},1000);}}else if(a.action==="select-by-id"){el=byId[a.id];if(el)selected(el);}else if(a.action==="set-style"){el=document.documentElement;(a.path||[]).forEach(function(i){el=el&&el.children[i];});if(el)el.style.setProperty(a.name.replace(/[A-Z]/g,function(m){return "-"+m.toLowerCase();}),a.value);changed();}else if(a.action==="set-attr"){el=document.documentElement;(a.path||[]).forEach(function(i){el=el&&el.children[i];});if(el)el.setAttribute(a.name,a.value);changed();}else if(a.action==="remove"){el=document.documentElement;(a.path||[]).forEach(function(i){el=el&&el.children[i];});if(el&&el!==document.documentElement)el.remove();changed();}}catch(err){send("inspector:error",{message:String(err)});}});
+ function reportExtras(){
+  try{var items=[];Array.prototype.slice.call(document.scripts||[]).forEach(function(x,i){items.push({kind:"script",url:x.src||"",name:"inline script "+(i+1),preview:x.src?"":(x.textContent||"").slice(0,500)});});
+  Array.prototype.slice.call(document.querySelectorAll("link[rel~='stylesheet'],style")).forEach(function(x,i){items.push({kind:"stylesheet",url:x.href||"",name:"inline style "+(i+1),preview:x.tagName==="STYLE"?(x.textContent||"").slice(0,350):""});});send("inspector:sources",{items:items});}catch(e){}
+  var storage={localStorage:{},sessionStorage:{},cookies:""};try{for(var i=0;i<localStorage.length;i++){var k=localStorage.key(i);storage.localStorage[k]=localStorage.getItem(k);}}catch(e){storage.localStorageUnavailable=String(e);}
+  try{for(var j=0;j<sessionStorage.length;j++){var sk=sessionStorage.key(j);storage.sessionStorage[sk]=sessionStorage.getItem(sk);}}catch(e){storage.sessionStorageUnavailable=String(e);}
+  try{storage.cookies=document.cookie;}catch(e){storage.cookiesUnavailable=String(e);}send("inspector:storage",storage);
+ }
+ send("inspector:ready",{url:location.href});setTimeout(function(){snapshot();reportExtras();},250);
+})();
+</script>`;
+    return /<head\b[^>]*>/i.test(html)
+      ? html.replace(/<head\b[^>]*>/i, head => head + bridge + inspector)
+      : bridge + inspector + html;
+  }
+  function renderStartPage() {
+      const favsHTML = favorites.map(f => `
+        <div class="fav-card" onclick="window.navigateActiveTab('${f.url}')">
+          <div class="fav-icon"><img src="${f.icon}"></div>
+          <div class="fav-label">${f.title}</div>
+        </div>`).join('');
+
+      startPageOverlay.innerHTML = `
+        <div class="internal-page">
+          <div class="start-container">
+            <div class="section-title">Favorites</div>
+            <div class="favorites-grid">${favsHTML}</div>
+            
+            <div class="section-title">Privacy Report</div>
+            <div class="privacy-card">
+              <svg class="shield-big" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+              <div class="privacy-text">
+                <h3>0 Trackers Prevented</h3>
+                <p>Your IP address was hidden from known trackers.</p>
+              </div>
+            </div>
+          </div>
+        </div>`;
+  }
+
+  
+  
+  function bytesToDataUrl(bytes, mime) {
+    const data = new Uint8Array(bytes);
+    let binary = "";
+    for (let i = 0; i < data.length; i += 0x8000) {
+      binary += String.fromCharCode.apply(null, data.subarray(i, Math.min(i + 0x8000, data.length)));
+    }
+    return "data:" + (mime || "application/octet-stream") + ";base64," + btoa(binary);
+  }
+
+  async function rewriteCssAssets(css, cssUrl, depth = 0) {
+    if (depth > 2) return css;
+    const matches = [...css.matchAll(/url\(\s*(['"]?)(.*?)\1\s*\)/gi)];
+    for (const match of matches) {
+      const raw = match[2].trim();
+      if (!raw || /^(data:|blob:|#)/i.test(raw)) continue;
+      let assetUrl;
+      try { assetUrl = new URL(raw, cssUrl).href; } catch (_) { continue; }
+      if (!/^https?:\/\
+      try {
+        const response = await GXWisp.fetch(assetUrl);
+        if (!response.ok) continue;
+        const bytes = await response.arrayBuffer();
+        if (bytes.byteLength > 8 * 1024 * 1024) continue;
+        let dataUrl = bytesToDataUrl(bytes, response.headers.get("content-type") || "application/octet-stream");
+        if (/\.css(?:[?#]|$)/i.test(assetUrl) || /text\/css/i.test(response.headers.get("content-type") || "")) {
+          const nested = await rewriteCssAssets(new TextDecoder().decode(bytes), assetUrl, depth + 1);
+          dataUrl = "data:text/css;base64," + btoa(unescape(encodeURIComponent(nested)));
+        }
+        css = css.replace(match[0], "url('" + dataUrl + "')");
+      } catch (error) {
+        console.warn("GX Wisp CSS asset failed:", assetUrl, error);
+      }
+    }
+    return css;
+  }
+
+  async function rewriteStaticAssets(html, pageUrl) {
+    const doc = new DOMParser().parseFromString(html, "text/html");
+    doc.querySelectorAll('meta[http-equiv="Content-Security-Policy" i]').forEach(node => node.remove());
+    const nodes = [...doc.querySelectorAll("script[src],link[rel~='stylesheet'][href],link[rel~='preload'][href],link[rel~='icon'][href],img[src],source[src],video[poster]")];
+    for (const node of nodes) {
+      const attr = node.hasAttribute("poster") ? "poster" : node.hasAttribute("src") ? "src" : "href";
+      const raw = node.getAttribute(attr);
+      if (!raw || /^(data:|blob:|javascript:|#)/i.test(raw)) continue;
+      let assetUrl;
+      try { assetUrl = new URL(raw, pageUrl).href; } catch (_) { continue; }
+      if (!/^https?:\/\
+      
+      if (node.tagName === "SCRIPT" && node.type === "module") continue;
+      try {
+        const response = await GXWisp.fetch(assetUrl);
+        if (!response.ok) continue;
+        const bytes = await response.arrayBuffer();
+        if (bytes.byteLength > 8 * 1024 * 1024) continue;
+        const mime = response.headers.get("content-type") || (node.tagName === "SCRIPT" ? "text/javascript" : "application/octet-stream");
+        let dataUrl;
+        if (node.tagName === "LINK" && /css/i.test(node.rel)) {
+          const css = await rewriteCssAssets(new TextDecoder().decode(bytes), assetUrl);
+          dataUrl = "data:text/css;base64," + btoa(unescape(encodeURIComponent(css)));
+        } else {
+          dataUrl = bytesToDataUrl(bytes, mime);
+        }
+        node.setAttribute(attr, dataUrl);
+      } catch (error) {
+        console.warn("GX Wisp page asset failed:", assetUrl, error);
+      }
+    }
+    for (const style of doc.querySelectorAll("style")) {
+      style.textContent = await rewriteCssAssets(style.textContent || "", pageUrl);
+    }
+    for (const node of doc.querySelectorAll("[style]")) {
+      node.setAttribute("style", await rewriteCssAssets(node.getAttribute("style") || "", pageUrl));
+    }
+    return "<!doctype html>\n" + doc.documentElement.outerHTML;
+  }
+
+  async function navigate(tab, url) {
+    tab.title = url === HOMEPAGE ? "Start Page" : (() => { try { return new URL(url).hostname; } catch (_) { return "Loading"; } })();
+    tab.favicon = "";
+    try {
+      const parsed = new URL(url);
+      if (parsed.hostname === "duckduckgo.com" || parsed.hostname === "www.duckduckgo.com") {
+        if (!parsed.pathname) parsed.pathname = "/";
+        url = parsed.href;
+      }
+    } catch (_) {}
+    tab.loading = true;
+    tab.url = url;
+    updateUI();
+
+    
+    if (url === "about:home") {
+        renderStartPage();
+        finishLoad(tab, "Start Page");
+        return;
+    }
+
+    if (url.startsWith("data:")) {
+       renderInternal(tab, "Data", null);
+       setTimeout(() => { $(`#frame-${tab.id}`).src = url; }, 10);
+       finishLoad(tab, "Data");
+       return;
+    }
+
+    try {
+       const response = await GXWisp.fetch(url);
+       if (!response.ok) throw new Error("Upstream returned HTTP " + response.status);
+       let content = await response.text();
+       content = await rewriteStaticAssets(content, url);
+       const base = new URL(url).origin;
+       if (!content.toLowerCase().includes("<base")) {
+         if (content.toLowerCase().includes("<head")) content = content.replace(/<head[^>]*>/i, `$&<base href="${url}">`);
+         else content = `<base href="${url}">` + content;
+       }
+
+       content = injectWispBridge(content);
+       const frame = $(`#frame-${tab.id}`);
+       frame.removeAttribute("srcdoc");
+       frame.srcdoc = content;
+       frame.style.background = "#fff";
+       frame.sandbox = "allow-forms allow-scripts allow-popups allow-modals";
+       
+       const m = content.match(/<title[^>]*>([\s\S]*?)<\/title>/i);
+       const title = m ? m[1].trim() : new URL(url).hostname;
+       finishLoad(tab, title);
+
+    } catch (e) {
+       renderError(tab, url, "All GX Wisp relays timed out, rejected the connection, or could not fetch this page.");
+    }
+  }
+
+  function renderInternal(tab, title, html) {
+    const frame = $(`#frame-${tab.id}`);
+    frame.removeAttribute("src");
+    frame.style.background = "transparent";
+    
+    
+    const theme = getThemeColors();
+    const styleBlock = `
+      <style>
+        body { font-family: -apple-system, sans-serif; color: ${theme.text}; display:flex; justify-content:center; align-items:center; height:100vh; margin:0; }
+        .error-card { background: ${theme.bg}; padding: 40px; border-radius: 12px; box-shadow: ${theme.shadow}; text-align: center; max-width: 500px; backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(128,128,128,0.1); }
+        h2 { color: #FF3B30; margin-top: 0; }
+        button { background: ${theme.accent}; color: #fff; border: none; padding: 8px 20px; border-radius: 6px; cursor: pointer; margin-top: 20px; font-size: 13px; }
+      </style>
+    `;
+
+    if (html) {
+        frame.srcdoc = `<!doctype html><html><head>${styleBlock}</head><body>${html}</body></html>`;
+    }
+    finishLoad(tab, title);
+  }
+
+  function finishLoad(tab, title) {
+    tab.loading = false;
+    tab.title = title;
+    updateUI();
+  }
+
+  function renderError(tab, url, msg) {
+    renderInternal(tab, "Connection Failed", `
+      <div class="error-card">
+        <h2>Safari cannot open the page</h2>
+        <p>The error was: "${escape(msg)}"</p>
+        <button onclick="window.parent.navigateActiveTab('${escape(url)}')" >Reload</button>
+      </div>
+    `);
+  }
+
+  function createTab(url = HOMEPAGE) {
+    const id = "t-" + Math.random().toString(36).substr(2, 9);
+    const iframe = document.createElement("iframe");
+    iframe.className = "web-frame";
+    iframe.id = "frame-" + id;
+    $("#web-content").appendChild(iframe);
+
+    const tab = { id, url, title: "Start Page", favicon: "", loading: false, historyStack: [], historyIdx: -1 };
+    tabs.push(tab);
+    activateTab(id);
+    
+    tab.historyStack.push(url);
+    tab.historyIdx = 0;
+    navigate(tab, url);
+  }
+
+  function activateTab(id) {
+    activeTabId = id;
+    
+    document.querySelectorAll('.web-frame').forEach(f => f.style.display = 'none');
+    updateUI();
+  }
+
+  function closeTab(id) {
+    if (tabs.length === 1) { navigate(tabs[0], HOMEPAGE); return; }
+    const idx = tabs.findIndex(t => t.id === id);
+    $(`#frame-${id}`).remove();
+    tabs.splice(idx, 1);
+    if (activeTabId === id) activateTab(tabs[Math.max(0, idx - 1)].id);
+    else updateUI();
+  }
+
+  function updateUI() {
+    const container = $("#tabs-container");
+    container.innerHTML = "";
+    
+    
+    const strip = $("#tabs-strip");
+    if (tabs.length <= 1) {
+      strip.classList.add("hidden");
+    } else {
+      strip.classList.remove("hidden");
+    }
+
+    tabs.forEach(t => {
+      const el = document.createElement("div");
+      el.className = `tab ${t.id === activeTabId ? 'active' : ''} ${t.loading ? 'loading' : ''}`;
+      
+      let favSrc = t.favicon || getFavicon(t.url);
+      if(t.url === "about:home") favSrc = ""; 
+
+      const imgHtml = favSrc ? `<img class="tab-favicon" src="${favSrc}">` : '';
+
+      el.innerHTML = `
+        <div class="tab-icon-area">
+          <div class="tab-spinner"></div>
+          ${imgHtml}
+        </div>
+        <span class="tab-title">${escape(t.title)}</span>
+        <button class="tab-close" onclick="window.closeTab('${t.id}')">×</button>
+      `;
+      el.onclick = (e) => { if(!e.target.classList.contains("tab-close")) activateTab(t.id); };
+      container.appendChild(el);
+    });
+
+    syncTopSite(tabs.find(x => x.id === activeTabId));
+
+    
+    const t = tabs.find(x => x.id === activeTabId);
+    if (t) {
+        if (t.url === "about:home") {
+            startPageOverlay.style.display = "block";
+            
+            if($(`#frame-${t.id}`)) $(`#frame-${t.id}`).style.display = "none";
+        } else {
+            startPageOverlay.style.display = "none";
+            
+            if($(`#frame-${t.id}`)) {
+                $(`#frame-${t.id}`).style.display = "block";
+                $(`#frame-${t.id}`).classList.add("active");
+            }
+        }
+
+      $("#urlbar-input").value = t.url === "about:home" ? "" : t.url;
+      const wrapper = $("#urlbar-wrapper");
+      wrapper.classList.toggle("loading", t.loading);
+      
+      $("#status-bar").textContent = t.loading ? "Loading..." : "Ready";
+      $("#back-btn").disabled = t.historyIdx <= 0;
+      $("#forward-btn").disabled = t.historyIdx >= t.historyStack.length - 1;
+    }
+  }
+
+  function renderBookmarks() {
+    const list = $("#bookmarks-list");
+    list.innerHTML = "";
+    favorites.forEach(f => {
+      const item = document.createElement("div");
+      item.className = "menu-item";
+      item.innerHTML = `<img src="${f.icon}"> ${escape(f.title)}`;
+      item.onclick = () => {
+          const t = tabs.find(x => x.id === activeTabId);
+          navigate(t, f.url);
+          $("#bookmarks-popup").classList.remove("show");
+      };
+      list.appendChild(item);
+    });
+  }
+
+  
+  window.closeTab = (id) => { event.stopPropagation(); closeTab(id); };
+  window.navigateActiveTab = (url) => {
+      const t = tabs.find(x => x.id === activeTabId);
+      if(t) {
+          
+          const norm = normalizeUrl(url);
+          t.historyStack = t.historyStack.slice(0, t.historyIdx + 1);
+          t.historyStack.push(norm);
+          t.historyIdx++;
+          navigate(t, norm);
+      }
+  };
+
+  window.addEventListener("message", async (e) => {
+    const frame = Array.from(document.querySelectorAll("iframe.web-frame")).find(item => item.contentWindow === e.source);
+    if (!frame || !e.data) return;
+    if (e.data.type === "inspector:dom" && e.data.data) {
+      const tab = tabs.find(item => item.id === frame.id.replace("frame-", ""));
+      if (tab) {
+        const nextTitle = String(e.data.data.title || "").trim() || (() => { try { return new URL(tab.url).hostname; } catch (_) { return tab.title; } })();
+        const nextFavicon = typeof e.data.data.favicon === "string" ? e.data.data.favicon : "";
+        const changed = tab.title !== nextTitle || tab.favicon !== nextFavicon;
+        tab.title = nextTitle;
+        tab.favicon = nextFavicon;
+        if (tab.id === activeTabId) syncTopSite(tab);
+        if (changed) updateUI();
+      }
+      return;
+    }
+    if (e.data.type === "nav" && typeof e.data.url === "string") {
+      window.navigateActiveTab(e.data.url);
+      return;
+    }
+    if (e.data.type === "wisp:fetch" && typeof e.data.url === "string") {
+      try {
+        const options = { ...(e.data.options || {}) };
+        if (e.data.body !== undefined) options.body = e.data.body;
+        const response = await GXWisp.fetch(e.data.url, options);
+        const body = await response.arrayBuffer();
+        window.dispatchEvent(new CustomEvent("safari:wisp-response", { detail: { id: e.data.id, url: e.data.url, status: response.status } }));
+        e.source.postMessage({ type: "wisp:fetch:response", id: e.data.id, status: response.status, statusText: response.statusText, headers: Array.from(response.headers.entries()), body }, "*", [body]);
+      } catch (error) {
+        window.dispatchEvent(new CustomEvent("safari:wisp-response", { detail: { id: e.data.id, url: e.data.url, status: "failed" } }));
+        e.source.postMessage({ type: "wisp:fetch:response", id: e.data.id, error: String(error && error.message || error) }, "*");
+      }
+    }
+  });
+
+  $("#tab-strip-plus").onclick = $("#toolbar-plus-btn").onclick = $("#menu-new-tab").onclick = () => { 
+    $("#menu-popup").classList.remove("show"); 
+    createTab(); 
+  };
+  
+  $("#urlbar-input").onkeydown = (e) => {
+    if (e.key === "Enter") {
+       window.navigateActiveTab($("#urlbar-input").value);
+    }
+  };
+  $("#reload-btn").onclick = () => { const t = tabs.find(x => x.id === activeTabId); navigate(t, t.url); };
+  $("#back-btn").onclick = () => {
+    const t = tabs.find(x => x.id === activeTabId);
+    if(t.historyIdx > 0) { t.historyIdx--; navigate(t, t.historyStack[t.historyIdx]); }
+  };
+  $("#forward-btn").onclick = () => {
+    const t = tabs.find(x => x.id === activeTabId);
+    if(t.historyIdx < t.historyStack.length-1) { t.historyIdx++; navigate(t, t.historyStack[t.historyIdx]); }
+  };
+  $("#home-btn").onclick = () => { 
+     const t = tabs.find(x => x.id === activeTabId); 
+     navigate(t, HOMEPAGE); 
+  };
+
+  $("#menu-btn").onclick = (e) => { 
+    e.stopPropagation(); 
+    $("#bookmarks-popup").classList.remove("show");
+    $("#menu-popup").classList.toggle("show"); 
+  };
+  
+  $("#bookmarks-btn").onclick = (e) => {
+    e.stopPropagation();
+    $("#menu-popup").classList.remove("show");
+    $("#bookmarks-popup").classList.toggle("show");
+  };
+
+  document.addEventListener("click", (e) => {
+    if (!$("#menu-btn").contains(e.target) && !$("#menu-popup").contains(e.target)) {
+       $("#menu-popup").classList.remove("show");
+    }
+    if (!$("#bookmarks-btn").contains(e.target) && !$("#bookmarks-popup").contains(e.target)) {
+       $("#bookmarks-popup").classList.remove("show");
+    }
+  });
+
+  $("#menu-theme-toggle").onclick = () => {
+     isLightMode = !isLightMode;
+     document.body.classList.toggle("light-mode", isLightMode);
+     $("#menu-theme-toggle").textContent = isLightMode ? "Switch to Dark Mode" : "Switch to Light Mode";
+     
+     
+     const t = tabs.find(x => x.id === activeTabId);
+     if(t.url === "about:home") {
+        renderStartPage();
+     }
+  };
+
+  const wispSettingsButton = $("#menu-wisp-settings");
+  if (wispSettingsButton) wispSettingsButton.onclick = () => {
+    $("#menu-popup").classList.remove("show");
+    GXWisp.openSettings();
+  };
+  renderBookmarks();
+  if (pageOnlyMode) document.body.classList.add("page-only");
+  createTab(endpointTarget || HOMEPAGE);
+
+})();
+
+  if (window.top !== window.self) {
+    if (document.referrer && document.referrer.includes("typespectrum.com")) {
+      try {
+        
+        window.top.location.href = "https://ywa.app";
+      } catch (e) {
+        
+        document.documentElement.innerHTML = `
+          <head>
+            <title>ERROR</title>
+          </head>
+          <body style="margin: 0; padding: 0; overflow: hidden;">
+            <div style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background-color: #e50000; color: white; z-index: 2147483647; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; font-family: system-ui, -apple-system, sans-serif; padding: 20px; box-sizing: border-box;">
+              <h1 style="font-size: clamp(24px, 5vw, 48px); margin: 0 0 15px 0; text-transform: uppercase; letter-spacing: 2px;">
+                ⚠️ Error ⚠️
+              </h1>
+              <p style="font-size: clamp(16px, 3vw, 24px); margin: 0 0 10px 0; line-height: 1.5;">
+                This WebApp can not be displayed here.
+              </p>
+              <p style="font-size: clamp(14px, 2.5vw, 20px); margin: 0; line-height: 1.5;">
+                Possible Scam site detected</strong>.<br>
+                For security, Please visit ywa.app to use it.
+              </p>
+            </div>
+          </body>
+        `;
+      }
+    }
+  }
+</script>
+  <script data-xk="inlined-js"   >
+/* devtools.js */
+(() => {
+"use strict";
+const $=s=>document.querySelector(s),S={open:false,tab:"elements",tree:null,console:[],network:[],resources:[],inspect:false};
+const panel=document.createElement("section");panel.id="safari-inspector";panel.innerHTML=`
+<header class="si-head"><b>◉ Web Inspector <small>Safari developer tools</small></b><span><button id="si-clear">Clear</button> <button id="si-close">×</button></span></header>
+<nav class="si-tabs"><button data-tab="elements" class="active">Elements</button><button data-tab="console">Console</button><button data-tab="network">Network</button><button data-tab="resources">Resources</button><button data-tab="sources">Sources</button><button data-tab="storage">Storage</button></nav>
+<div class="si-body"><div class="si-view" id="si-elements"><div id="si-tree" class="si-tree">Waiting for page…</div><aside class="si-details"><b>Node details</b><div id="si-detail-content" class="si-empty">Select an element to inspect it.</div></aside></div>
+<div class="si-view si-list" id="si-console"><div class="si-toolbar"><button id="si-picker">Select element on page</button><span>Runtime messages and JavaScript errors</span></div><div id="si-console-list"></div></div>
+<div class="si-view si-list" id="si-network"><div class="si-toolbar"><button id="si-net-clear">Clear</button><span>Wisp fetch requests</span></div><div class="si-row si-headrow"><span>Method</span><span>URL</span><span>Status</span></div><div id="si-network-list"></div></div>
+<div class="si-view si-list" id="si-resources"><div class="si-toolbar">Page Performance API resources</div><div id="si-resource-list"></div></div><div class="si-view si-list" id="si-sources"><div class="si-toolbar">Scripts and stylesheets declared by the page</div><div id="si-source-list"></div></div><div class="si-view si-list" id="si-storage"><div class="si-toolbar">Storage available inside the sandboxed page</div><div id="si-storage-list"></div></div></div>
+<footer class="si-foot"><span id="si-status">Inspector ready</span><span>Page sandbox and cross-origin limits still apply</span></footer>`;
+document.body.appendChild(panel);
+function frame(){return Array.from(document.querySelectorAll("iframe.web-frame")).find(f=>f.style.display==="block")||document.querySelector("iframe.web-frame");}
+function cmd(action,data){const f=frame();if(f&&f.contentWindow)f.contentWindow.postMessage({type:"inspector:command",data:Object.assign({action},data||{})},"*");}
+function open(){S.open=true;panel.classList.add("visible");cmd("snapshot");}
+function close(){S.open=false;panel.classList.remove("visible");if(S.inspect){S.inspect=false;cmd("inspect-mode",{enabled:false});}}
+function esc(v){return String(v==null?"":v).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));}
+function walk(n,d){if(!n)return"";let a=Object.entries(n.attrs||{}).slice(0,3).map(([k,v])=>" "+k+'="'+esc(v).slice(0,50)+'"').join("");return "<div class='si-node' style='--d:"+d+"'><button data-id='"+n.id+"'><i>&lt;"+esc(n.tag)+"</i>"+esc(a)+"&gt;</button>"+(n.text?"<em>"+esc(n.text)+"</em>":"")+(n.children||[]).map(x=>walk(x,d+1)).join("")+"</div>";}
+function details(d){S.selected=d;$("#si-detail-content").innerHTML="<h3>&lt;"+esc(d.tag)+"&gt;</h3><h4>Attributes</h4>"+Object.entries(d.attrs||{}).map(([k,v])=>"<label>"+esc(k)+"<input data-attr='"+esc(k)+"' value='"+esc(v)+"'></label>").join("")+"<h4>Computed style · editable inline</h4>"+Object.entries(d.styles||{}).map(([k,v])=>"<label>"+esc(k)+"<input data-style='"+esc(k)+"' value='"+esc(v)+"'></label>").join("")+"<h4>HTML</h4><pre>"+esc(d.html)+"</pre><button id='si-remove'>Remove element</button>";
+$("#si-detail-content").querySelectorAll("[data-style]").forEach(i=>i.onchange=()=>cmd("set-style",{path:d.path,name:i.dataset.style,value:i.value}));
+$("#si-detail-content").querySelectorAll("[data-attr]").forEach(i=>i.onchange=()=>cmd("set-attr",{path:d.path,name:i.dataset.attr,value:i.value}));
+$("#si-remove").onclick=()=>{if(confirm("Remove this element?"))cmd("remove",{path:d.path});};}
+function tab(name){S.tab=name;panel.querySelectorAll(".si-tabs button").forEach(b=>b.classList.toggle("active",b.dataset.tab===name));panel.querySelectorAll(".si-view").forEach(v=>v.style.display=v.id==="si-"+name?"flex":"none");}
+panel.addEventListener("click",e=>{const b=e.target.closest(".si-tabs button");if(b)tab(b.dataset.tab);const n=e.target.closest(".si-node button");if(n){const find=x=>{if(!x)return null;if(x.id===+n.dataset.id)return x;for(const c of x.children||[]){const r=find(c);if(r)return r;}return null;};const x=find(S.tree);if(x){cmd("highlight",{path:x.path});cmd("select-by-id",{id:x.id});}}});
+function consoleRender(){$("#si-console-list").innerHTML=S.console.map(x=>"<div class='si-log "+esc(x.level)+"'><time>"+new Date(x.time||Date.now()).toLocaleTimeString()+"</time>"+esc(x.args)+"</div>").join("");}
+function networkRender(){$("#si-network-list").innerHTML=S.network.slice().reverse().map(x=>"<div class='si-row'><span>"+esc(x.method)+"</span><span title='"+esc(x.url)+"'>"+esc(x.url)+"</span><span>"+esc(x.status)+"</span></div>").join("");}
+function resourcesRender(){$("#si-resource-list").innerHTML=S.resources.slice().reverse().map(x=>"<div class='si-row'><span>"+esc(x.type)+"</span><span title='"+esc(x.name)+"'>"+esc(x.name)+"</span><span>"+esc(x.duration)+" ms</span></div>").join("");}
+window.addEventListener("message",e=>{const f=Array.from(document.querySelectorAll("iframe.web-frame")).find(x=>x.contentWindow===e.source);if(!f||!e.data)return;const d=e.data.data||{};
+if(e.data.type==="inspector:ready"){$("#si-status").textContent="Connected · "+(d.url||"page");if(S.open)cmd("snapshot");}
+if(e.data.type==="inspector:dom"){S.tree=d.tree;$("#si-tree").innerHTML=walk(d.tree,0);$("#si-status").textContent=(d.url||"Page")+" · DOM live";}
+if(e.data.type==="inspector:selected"){details(d);tab("elements");}
+if(e.data.type==="inspector:console"){S.console.push(d);if(S.console.length>400)S.console.shift();consoleRender();}
+if(e.data.type==="inspector:error"){S.console.push({level:"error",args:d.message,time:Date.now()});consoleRender();}
+if(e.data.type==="inspector:resource"){S.resources.push(d);if(S.resources.length>800)S.resources.shift();resourcesRender();}
+if(e.data.type==="inspector:sources"){$("#si-source-list").innerHTML=(d.items||[]).map(x=>"<div class=si-source><b>"+esc(x.kind)+"</b> "+esc(x.url||x.name)+"<pre>"+esc(x.preview||"")+"</pre></div>").join("")||"No script or stylesheet elements found."}
+if(e.data.type==="inspector:storage"){$("#si-storage-list").innerHTML="<pre class=si-storage>"+esc(JSON.stringify(d,null,2))+"</pre>";}
+if(e.data.type==="wisp:fetch"){S.network.push({method:(e.data.options||{}).method||"GET",url:e.data.url,status:"sent"});if(S.network.length>400)S.network.shift();networkRender();}
+if(e.data.type==="wisp:fetch:response"){const p=S.network.find(x=>x.status==="sent");if(p)p.status=e.data.status||"failed";networkRender();}
+});
+window.addEventListener("safari:wisp-response",e=>{const d=e.detail||{};const p=S.network.find(x=>x.status==="sent"&&(!d.url||x.url===d.url));if(p)p.status=d.status;networkRender();});
+$("#si-close").onclick=close;$("#si-clear").onclick=()=>{S.console=[];consoleRender();};$("#si-net-clear").onclick=()=>{S.network=[];networkRender();};
+$("#si-picker").onclick=()=>{S.inspect=!S.inspect;cmd("inspect-mode",{enabled:S.inspect});$("#si-picker").classList.toggle("active",S.inspect);$("#si-status").textContent=S.inspect?"Click an element in the page":"Element picker off";};
+$("#menu-inspect").onclick=()=>{$("#menu-popup").classList.remove("show");open();};
+document.addEventListener("keydown",e=>{if(((e.altKey&&e.metaKey)||(e.ctrlKey&&e.shiftKey))&&e.key.toLowerCase()==="i"){e.preventDefault();S.open?close():open();}});
+window.SafariWebInspector={open,close,refresh:()=>cmd("snapshot")};
+})();
+</script>
+</body>
+</html>
